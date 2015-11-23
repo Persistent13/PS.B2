@@ -1,0 +1,14 @@
+# See http://www.appveyor.com/docs/appveyor-yml for more options
+
+#Installs the pester module for tests.
+install:
+  - cint pester -y
+
+#Not used; nothing to build.
+build: false
+
+test_script:
+#Tests with native PS version
+  - ps: . .\Tests\appveyor.pester.ps1 -Test
+#Finalize pass, collects and uploads the results.
+  - ps: . .\Tests\appveyor.pester.ps1 -Finalize
