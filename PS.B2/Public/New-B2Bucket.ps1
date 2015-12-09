@@ -11,7 +11,6 @@ function New-B2Bucket
 		Another example of how to use this cmdlet
 	#>
 	[CmdletBinding(SupportsShouldProcess=$true,
-				   ValueFromPipelineByPropertyName=$false,
 				   ConfirmImpact='Low')]
 	[Alias()]
 	[OutputType()]

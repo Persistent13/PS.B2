@@ -31,7 +31,7 @@ function Connect-B2Cloud
 #>
     [CmdletBinding(SupportsShouldProcess=$false,
                    PositionalBinding=$true)]
-    [Alias('cdoc')]
+    [Alias('cb2c')]
     [OutputType()]
     Param
     (
@@ -53,29 +53,22 @@ function Connect-B2Cloud
 
     Begin
     {
-        if(-not $AccountID -or -not $ApplicationKey)
+        if(-not $AccountID)
         {
-			if($AccountID)
-			{
-				[PSCredential]$bbCredential = Get-Credential -Message 'Enter your B2 account ID and application key below.' -UserName $AccountID
-			}
-			else
-			{
-				[PSCredential]$bbCredential = Get-Credential -Message 'Enter your B2 account ID and application key below.'
-			}
+            [String]$AccountID = (Get-Credential -Message 'Enter your B2 account ID and application key below.' -UserName 'AccountID').GetNetworkCredential().Password
         }
-		else
-		{
-			[SecureString]$bbSecAppKey = ConvertTo-SecureString $ApplicationKey -AsPlainText -Force
-			[PSCredential]$bbCredential = New-Object PSCredential($AccountID, $bbSecAppKey)
-		}
+        if(-not $ApplicationKey)
+        {
+            [String]$ApplicationKey = (Get-Credential -Message 'Enter your B2 account ID and application key below.' -UserName 'ApplicationKey').GetNetworkCredential().Password
+        }
+        [Hashtable]$sessionHeaders = @{$AccountID=$ApplicationKey;'Content-Type'='application/json'}
         [Uri]$bbApiUri = 'https://api.backblaze.com/b2api/v1/b2_authorize_account'
     }
     Process
     {
         try
         {
-            $bbReturnInfo = Invoke-RestMethod -Method Get -Uri $bbApiUri -Credential $bbCredential
+            $bbReturnInfo = Invoke-RestMethod -Method Get -Uri $bbApiUri -Headers $sessionHeaders
             $script:SavedB2AccountID = $bbReturnInfo.accountId
             $script:SavedB2ApiUri = $bbReturnInfo.apiUrl
             $script:SavedB2ApiToken = $bbReturnInfo.authorizationToken
@@ -84,16 +77,9 @@ function Connect-B2Cloud
         }
         catch
         {
-            if(Test-Connection -ComputerName $bbApiUri.DnsSafeHost -Port $bbApiUri.Port)
-            {
-                Write-Error -Exception 'Unable to authenticate with the given credentials.' `
-                    -Message 'Unable to authenticate with given the credentials.' -Category AuthenticationError
-            }
-            else
-            {
-                Write-Error -Exception "Cannot reach $bbApiUri please check connecitvity." `
-                    -Message "Cannot reach $bbApiUri please check connecitvity." -Category ConnectionError
-            }
+            $errorDetail = $_.Exception.Message
+            Write-Error -Exception "Unable to authenticate with given APIKey.`n`r$errorDetail" `
+                -Message "Unable to authenticate with given APIKey.`n`r$errorDetail" -Category AuthenticationError
         }
     }
 }
