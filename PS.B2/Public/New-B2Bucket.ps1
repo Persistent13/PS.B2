@@ -13,7 +13,7 @@ function New-B2Bucket
 	[CmdletBinding(SupportsShouldProcess=$true,
 				   ConfirmImpact='Low')]
 	[Alias()]
-	[OutputType()]
+	[OutputType('PS.B2.Bucket')]
 	Param
 	(
 		# The name of the new B2 bucket.
@@ -59,16 +59,24 @@ function New-B2Bucket
 	Begin
 	{
 		[Hashtable]$sessionHeaders = @{'Authorization'=$ApiToken}
-		[Uri]$b2ApiUri = "$ApiUri/b2api/v1/b2_create_bucket?accountId=$AccountID&bucketName=$BucketName&bucketType=$BucketType"
 	}
 	Process
 	{
-		if($Force -or $PSCmdlet.ShouldProcess("Creating bucket $BucketName of type $BucketType."))
+		foreach($bucket in $BucketName)
         {
-            foreach($bucket in $BucketName)
-            {
-			    Invoke-RestMethod -Method Get -Headers $sessionHeaders -Uri $b2ApiUri
-            }
+			if($Force -or $PSCmdlet.ShouldProcess("Creating bucket $bucket of type $BucketType."))
+        	{
+				[Uri]$b2ApiUri = "$ApiUri/b2api/v1/b2_create_bucket?accountId=$AccountID&bucketName=$bucket&bucketType=$BucketType"
+			    $bbInfo = Invoke-RestMethod -Method Get -Uri $b2ApiUri -Headers $sessionHeaders
+				$bbReturnInfo = [PSCustomObject]@{
+					'BucketName' = $bbInfo.bucketName
+					'BucketID' = $bbInfo.bucketId
+					'BucketType' = $bbInfo.bucketType
+					'AccountID' = $bbInfo.accountId
+				}
+				# bbReturnInfo is returned after Add-ObjectDetail is processed.
+				Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Bucket'
+			}
 		}
 	}
 }

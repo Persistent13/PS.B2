@@ -32,7 +32,7 @@ function Connect-B2Cloud
     [CmdletBinding(SupportsShouldProcess=$false,
                    PositionalBinding=$true)]
     [Alias('cb2c')]
-    [OutputType()]
+    [OutputType('PS.B2.Account')]
     Param
     (
         # The account ID for the B2 account.
@@ -70,12 +70,19 @@ function Connect-B2Cloud
     {
         try
         {
-            $bbReturnInfo = Invoke-RestMethod -Method Get -Uri $bbApiUri -Headers $sessionHeaders
-            $script:SavedB2AccountID = $bbReturnInfo.accountId
-            $script:SavedB2ApiUri = $bbReturnInfo.apiUrl
-            $script:SavedB2ApiToken = $bbReturnInfo.authorizationToken
-            $script:SavedB2DownloadUrl = $bbReturnInfo.downloadUrl
-            Write-Output $bbReturnInfo
+            $bbInfo = Invoke-RestMethod -Method Get -Uri $bbApiUri -Headers $sessionHeaders
+            $script:SavedB2AccountID = $bbInfo.accountId
+            $script:SavedB2ApiUri = $bbInfo.apiUrl
+            $script:SavedB2ApiToken = $bbInfo.authorizationToken
+            $script:SavedB2DownloadUri = $bbInfo.downloadUrl
+            $bbReturnInfo = [PSCustomObject]@{
+                'AccountID' = $bbInfo.accountId
+                'ApiUri' = $bbInfo.apiUrl
+                'DownloadUri' = $bbInfo.downloadUrl
+                'Token' = $bbInfo.authorizationToken
+            }
+			# bbReturnInfo is returned after Add-ObjectDetail is processed.
+			Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Account'
         }
         catch
         {
