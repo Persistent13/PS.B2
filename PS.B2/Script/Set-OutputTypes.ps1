@@ -19,8 +19,8 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
         Value = $null
     }
     
-    Update-TypeData @account -MemberName BucketName
-    Update-TypeData @account -MemberName BucketID
-    Update-TypeData @account -MemberName BucketType
-    Update-TypeData @account -MemberName AccountID
+    Update-TypeData @bucket -MemberName BucketName
+    Update-TypeData @bucket -MemberName BucketID
+    Update-TypeData @bucket -MemberName BucketType
+    #Update-TypeData @bucket -MemberName AccountID
 }
