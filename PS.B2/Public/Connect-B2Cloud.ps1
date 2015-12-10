@@ -61,7 +61,9 @@ function Connect-B2Cloud
         {
             [String]$ApplicationKey = (Get-Credential -Message 'Enter your B2 account ID and application key below.' -UserName 'ApplicationKey').GetNetworkCredential().Password
         }
-        [Hashtable]$sessionHeaders = @{$AccountID=$ApplicationKey;'Content-Type'='application/json'}
+        [String]$plainCreds = "${AccountID}:${ApplicationKey}"
+        [String]$encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($plainCreds))
+        [Hashtable]$sessionHeaders = @{'Authorization'="Basic $encodedCreds"}
         [Uri]$bbApiUri = 'https://api.backblaze.com/b2api/v1/b2_authorize_account'
     }
     Process
