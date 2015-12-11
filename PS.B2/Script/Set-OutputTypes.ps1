@@ -15,12 +15,12 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     #Adds bucket OutputType
     $bucket = @{
         MemberType = 'NoteProperty'
-        TypeName = 'PS.B2.Account'
+        TypeName = 'PS.B2.Bucket'
         Value = $null
     }
     
     Update-TypeData @bucket -MemberName BucketName
     Update-TypeData @bucket -MemberName BucketID
     Update-TypeData @bucket -MemberName BucketType
-    #Update-TypeData @bucket -MemberName AccountID
+    Update-TypeData @bucket -MemberName AccountID
 }

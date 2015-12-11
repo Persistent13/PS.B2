@@ -53,13 +53,11 @@ function Connect-B2Cloud
 
     Begin
     {
-        if(-not $AccountID)
+        if(-not $AccountID -or -not $ApplicationKey)
         {
-            [String]$AccountID = (Get-Credential -Message 'Enter your B2 account ID and application key below.' -UserName 'AccountID').GetNetworkCredential().Password
-        }
-        if(-not $ApplicationKey)
-        {
-            [String]$ApplicationKey = (Get-Credential -Message 'Enter your B2 account ID and application key below.' -UserName 'ApplicationKey').GetNetworkCredential().Password
+            [PSCredential]$b2Creds = Get-Credential -Message 'Enter your B2 account ID and application key below.'
+            [String]$AccountID = $b2Creds.GetNetworkCredential().UserName
+            [String]$ApplicationKey = $b2Creds.GetNetworkCredential().Password
         }
         [String]$plainCreds = "${AccountID}:${ApplicationKey}"
         [String]$encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($plainCreds))
