@@ -1,4 +1,4 @@
-function New-B2Bucket
+function Hide-B2Blob
 {
 	<#
 	.Synopsis
@@ -10,26 +10,23 @@ function New-B2Bucket
 	.EXAMPLE
 		Another example of how to use this cmdlet
 	#>
-	[CmdletBinding(SupportsShouldProcess=$true,
-				   ConfirmImpact='Low')]
-	[Alias('nb2b')]
-	[OutputType('PS.B2.Bucket')]
+	[CmdletBinding(SupportsShouldProcess=$true)]
+	[Alias('hb2b')]
+	[OutputType('PS.B2.Blob')]
 	Param
 	(
-		# The name of the new B2 bucket.
+		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$true,
 				   Position=0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-		[ValidateLength(1,50)]
-		[String[]]$BucketName,
-		# What type of bucket, public or private, to create.
+		[String[]]$FileName,
+		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$true,
 				   Position=1)]
-        [ValidateSet('allPublic','allPrivate')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-		[String]$BucketType,
+		[String]$BucketID,
         # Used to bypass confirmation prompts.
         [Parameter(Mandatory=$false,
                    Position=2)]
@@ -59,23 +56,25 @@ function New-B2Bucket
 	Begin
 	{
 		[Hashtable]$sessionHeaders = @{'Authorization'=$ApiToken}
+		[Uri]$b2ApiUri = "$ApiUri/b2api/v1/b2_hide_file"
 	}
 	Process
 	{
-		foreach($bucket in $BucketName)
-        {
-			if($Force -or $PSCmdlet.ShouldProcess("Creating bucket $bucket of type $BucketType."))
-        	{
-				[Uri]$b2ApiUri = "$ApiUri/b2api/v1/b2_create_bucket?accountId=$AccountID&bucketName=$bucket&bucketType=$BucketType"
-			    $bbInfo = Invoke-RestMethod -Method Get -Uri $b2ApiUri -Headers $sessionHeaders
+		foreach($file in $FileName)
+		{
+			if($Force -or $PSCmdlet.ShouldProcess("Hiding file $file in bucket $BucketID."))
+			{
+				[String]$sessionBody = @{'bucketId'=$BucketID;'fileName'=$file} | ConvertTo-Json
+				$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
 				$bbReturnInfo = [PSCustomObject]@{
-					'BucketName' = $bbInfo.bucketName
-					'BucketID' = $bbInfo.bucketId
-					'BucketType' = $bbInfo.bucketType
-					'AccountID' = $bbInfo.accountId
+					'FileName' = $bbInfo.fileName
+					'Size' = $bbInfo.size
+					'UploadTime' = $bbInfo.uploadTimestamp
+					'Action' = $bbInfo.action
+					'FileID' = $bbInfo.fileId
 				}
 				# bbReturnInfo is returned after Add-ObjectDetail is processed.
-				Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Bucket'
+				Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Blob'
 			}
 		}
 	}

@@ -12,7 +12,7 @@ function Remove-B2Bucket
 	#>
 	[CmdletBinding(SupportsShouldProcess=$true,
 				   ConfirmImpact='High')]
-	[Alias()]
+	[Alias('rb2b')]
 	[OutputType('PS.B2.Bucket')]
 	Param
 	(

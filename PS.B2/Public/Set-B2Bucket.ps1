@@ -12,7 +12,7 @@ function Set-B2Bucket
 	#>
 	[CmdletBinding(SupportsShouldProcess=$true,
 				   ConfirmImpact='High')]
-	[Alias()]
+	[Alias('sb2b')]
 	[OutputType('PS.B2.Bucket')]
 	Param
 	(

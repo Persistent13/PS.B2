@@ -11,7 +11,7 @@ function Get-B2Bucket
 		Another example of how to use this cmdlet
 	#>
 	[CmdletBinding(SupportsShouldProcess=$false)]
-	[Alias()]
+	[Alias('gb2b')]
 	[OutputType('PS.B2.Bucket')]
 	Param
 	(
