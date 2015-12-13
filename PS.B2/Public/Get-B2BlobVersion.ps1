@@ -1,4 +1,4 @@
-function Get-B2Blob
+function Get-B2BlobVersion
 {
 	<#
 	.Synopsis
@@ -11,8 +11,8 @@ function Get-B2Blob
 		Another example of how to use this cmdlet
 	#>
 	[CmdletBinding(SupportsShouldProcess=$false)]
-	[Alias('gb2bi')]
-	[OutputType('PS.B2.BlobProperty')]
+	[Alias('gb2bv')]
+	[OutputType('PS.B2.Blob')]
 	Param
 	(
 		# The Uri for the B2 Api query.
@@ -22,7 +22,7 @@ function Get-B2Blob
 				   Position=0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-		[String[]]$FileID,
+		[String[]]$BucketID,
 		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$false,
 				   Position=1)]
@@ -46,26 +46,26 @@ function Get-B2Blob
 	Begin
 	{
 		[Hashtable]$sessionHeaders = @{'Authorization'=$ApiToken}
-		[Uri]$b2ApiUri = "$ApiUri/b2api/v1/b2_get_file_info"
+		[Uri]$b2ApiUri = "$ApiUri/b2api/v1/b2_list_file_versions"
 	}
 	Process
 	{
-		foreach($file in $FileID)
+		foreach($bucket in $BucketID)
 		{
-			[String]$sessionBody = @{'fileId'=$file} | ConvertTo-Json
+			[String]$sessionBody = @{'bucketId'=$bucket} | ConvertTo-Json
 			$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
-			$bbReturnInfo = [PSCustomObject]@{
-				'FileName' = $bbInfo.fileName
-				'FileInfo' = $bbInfo.fileInfo
-				'ContentType' = $bbInfo.contentType
-				'ContentLength' = $bbInfo.contentLength
-				'BucketID' = $bbInfo.bucketId
-				'AccountID' = $bbInfo.accountId
-				'ContentSHA1' = $bbInfo.contentSha1
-				'FileID' = $bbInfo.fileId
+			foreach($info in $bbInfo.files)
+			{
+				$bbReturnInfo = [PSCustomObject]@{
+					'FileName' = $info.fileName
+					'Size' = $info.size
+					'UploadTime' = $info.uploadTimestamp
+					'Action' = $info.action
+					'FileID' = $info.fileId
+				}
+				# bbReturnInfo is returned after Add-ObjectDetail is processed.
+				Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Blob'
 			}
-			# bbReturnInfo is returned after Add-ObjectDetail is processed.
-			Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.BlobProperty'
 		}
 	}
 }

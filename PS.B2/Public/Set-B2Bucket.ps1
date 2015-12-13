@@ -18,6 +18,8 @@ function Set-B2Bucket
 	(
 		# The ID of the new B2 bucket.
 		[Parameter(Mandatory=$true,
+				   ValueFromPipeline=$true,
+				   ValueFromPipelineByPropertyName=$true,
 				   Position=0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]

@@ -29,6 +29,8 @@ function Get-B2UploadUri
 	(
 		# Param1 help description
 		[Parameter(Mandatory=$true,
+				   ValueFromPipelineByPropertyName=$true,
+				   ValueFromPipeline=$true,
 				   Position=0)]
 		[ValidateNotNull()]
 		[ValidateNotNullOrEmpty()]
@@ -50,18 +52,21 @@ function Get-B2UploadUri
 	Begin
 	{
 		[Hashtable]$sessionHeaders = @{'Authorization'=$ApiToken}
-		[String]$sessionBody = @{'bucketId'=$BucketID} | ConvertTo-Json
 		[Uri]$b2ApiUri = "$ApiUri/b2api/v1/b2_get_upload_url"
 	}
 	Process
 	{
-		$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
-		$bbReturnInfo = [PSCustomObject]@{
-			'BucketID' = $bbInfo.bucketId
-			'UploadUri' = $bbInfo.uploadUrl
-			'Token' = $bbInfo.authorizationToken
+		foreach($bucket in $BucketID)
+		{
+			[String]$sessionBody = @{'bucketId'=$bucket} | ConvertTo-Json
+			$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
+			$bbReturnInfo = [PSCustomObject]@{
+				'BucketID' = $bbInfo.bucketId
+				'UploadUri' = $bbInfo.uploadUrl
+				'Token' = $bbInfo.authorizationToken
+			}
+			# bbReturnInfo is returned after Add-ObjectDetail is processed.
+			Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.UploadUri'
 		}
-		# bbReturnInfo is returned after Add-ObjectDetail is processed.
-		Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.UploadUri'
 	}
 }

@@ -40,7 +40,7 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     Update-TypeData @blob -MemberName Size
     Update-TypeData @blob -MemberName UploadTime
 
-    #Adds blob OutputType
+    #Adds blobProperty OutputType
     $blobProperty = @{
         MemberType = 'NoteProperty'
         TypeName = 'PS.B2.BlobProperty'
@@ -56,7 +56,7 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     Update-TypeData @blobProperty -MemberName FileInfo
     Update-TypeData @blobProperty -MemberName FileName
 
-    #Adds uploaduri OutputType
+    #Adds uploadUri OutputType
     $uploadUri = @{
         MemberType = 'NoteProperty'
         TypeName = 'PS.B2.UploadUri'
@@ -66,4 +66,14 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     Update-TypeData @uploadUri -MemberName BucketID
     Update-TypeData @uploadUri -MemberName UploadUri
     Update-TypeData @uploadUri -MemberName Token
+
+    #Adds removeBlob OutputType
+    $removeBlob = @{
+        MemberType = 'NoteProperty'
+        TypeName = 'PS.B2.RemoveBlob'
+        Value = $null
+    }
+
+    Update-TypeData @removeBlob -MemberName FileID
+    Update-TypeData @removeBlob -MemberName FileName
 }

@@ -35,9 +35,9 @@ function Set-B2BlobContent
 		[ValidateNotNullOrEmpty()]
 		[String]$BucketID,
 		# Param2 help description
-		[Parameter(ValueFromPipelineByPropertyName=$true,
+		[Parameter(Mandatory=$true,
 				   ValueFromPipeline=$true,
-				   Mandatory=$true,
+				   ValueFromPipelineByPropertyName=$true,
 				   Position=1)]
 		[ValidateNotNull()]
 		[ValidateNotNullOrEmpty()]

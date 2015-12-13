@@ -19,6 +19,8 @@ function Invoke-B2BlobRequest
 		# The Uri for the B2 Api query.
 		[Parameter(ParameterSetName='FileID',
 				   Mandatory=$true,
+				   ValueFromPipeline=$true,
+				   ValueFromPipelineByPropertyName=$true,
 				   Position=0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
@@ -26,6 +28,8 @@ function Invoke-B2BlobRequest
 		# The Uri for the B2 Api query.
 		[Parameter(ParameterSetName='FileName',
 				   Mandatory=$true,
+				   ValueFromPipeline=$true,
+				   ValueFromPipelineByPropertyName=$true,
 				   Position=0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
@@ -33,6 +37,8 @@ function Invoke-B2BlobRequest
 		# The Uri for the B2 Api query.
 		[Parameter(ParameterSetName='FileName',
 				   Mandatory=$true,
+				   ValueFromPipeline=$true,
+				   ValueFromPipelineByPropertyName=$true,
 				   Position=1)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
@@ -79,7 +85,7 @@ function Invoke-B2BlobRequest
 	{
 		switch($PSCmdlet.ParameterSetName)
 		{
-			'FileID'
+			'FileName'
 			{
 				[Uri]$b2ApiUri = "${ApiDownloadUri}b2api/v1/b2_download_file_by_id?fileId=$FileID"
 				if($PSCmdlet.ShouldProcess($FileID, "Download to the path $OutFile."))
@@ -87,7 +93,7 @@ function Invoke-B2BlobRequest
 					Invoke-RestMethod -Method Get -Uri $b2ApiUri -Headers $sessionHeaders -OutFile $OutFile
 				}
 			}
-			'FileName'
+			'FileID'
 			{
 				[Uri]$b2ApiUri = "${ApiDownloadUri}file/$BucketName/$FileName"
 				if($PSCmdlet.ShouldProcess($FileName, "Download to the path $OutFile."))
