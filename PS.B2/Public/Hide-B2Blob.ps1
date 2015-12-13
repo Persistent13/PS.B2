@@ -17,12 +17,16 @@ function Hide-B2Blob
 	(
 		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$true,
+				   ValueFromPipeline=$true,
+				   ValueFromPipelineByPropertyName=$true,
 				   Position=0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
 		[String[]]$FileName,
 		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$true,
+				   ValueFromPipeline=$true,
+				   ValueFromPipelineByPropertyName=$true,
 				   Position=1)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
@@ -62,7 +66,7 @@ function Hide-B2Blob
 	{
 		foreach($file in $FileName)
 		{
-			if($Force -or $PSCmdlet.ShouldProcess("Hiding file $file in bucket $BucketID."))
+			if($Force -or $PSCmdlet.ShouldProcess($file, "Hiding blob in bucket $BucketID."))
 			{
 				[String]$sessionBody = @{'bucketId'=$BucketID;'fileName'=$file} | ConvertTo-Json
 				$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody

@@ -65,7 +65,7 @@ function Set-B2Bucket
 	{
 		foreach($bucket in $BucketID)
 		{
-			if($Force -or $PSCmdlet.ShouldProcess("Setting bucket $bucket to bucket type of $BucketType."))
+			if($Force -or $PSCmdlet.ShouldProcess($bucket, "Set bucket type to $BucketType."))
 			{
 				[String]$sessionBody = @{'accountId'=$AccountID;'bucketId'=$bucket;'bucketType'=$BucketType} | ConvertTo-Json
 				$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody

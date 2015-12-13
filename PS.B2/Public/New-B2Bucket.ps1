@@ -64,7 +64,7 @@ function New-B2Bucket
 	{
 		foreach($bucket in $BucketName)
         {
-			if($Force -or $PSCmdlet.ShouldProcess("Creating bucket $bucket of type $BucketType."))
+			if($Force -or $PSCmdlet.ShouldProcess($bucket, "Creating new $BucketType bucket."))
         	{
 				[Uri]$b2ApiUri = "$ApiUri/b2api/v1/b2_create_bucket?accountId=$AccountID&bucketName=$bucket&bucketType=$BucketType"
 			    $bbInfo = Invoke-RestMethod -Method Get -Uri $b2ApiUri -Headers $sessionHeaders

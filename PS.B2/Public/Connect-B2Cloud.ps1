@@ -58,6 +58,10 @@ function Connect-B2Cloud
             [PSCredential]$b2Creds = Get-Credential -Message 'Enter your B2 account ID and application key below.'
             [String]$AccountID = $b2Creds.GetNetworkCredential().UserName
             [String]$ApplicationKey = $b2Creds.GetNetworkCredential().Password
+            if(-not $AccountID -or -not $ApplicationKey)
+            {
+                throw 'You must specify the account ID and application key.'
+            }
         }
         [String]$plainCreds = "${AccountID}:${ApplicationKey}"
         [String]$encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($plainCreds))
@@ -69,10 +73,10 @@ function Connect-B2Cloud
         try
         {
             $bbInfo = Invoke-RestMethod -Method Get -Uri $bbApiUri -Headers $sessionHeaders
-            $script:SavedB2AccountID = $bbInfo.accountId
-            $script:SavedB2ApiUri = $bbInfo.apiUrl
-            $script:SavedB2ApiToken = $bbInfo.authorizationToken
-            $script:SavedB2DownloadUri = $bbInfo.downloadUrl
+            [String]$script:SavedB2AccountID = $bbInfo.accountId
+            [Uri]$script:SavedB2ApiUri = $bbInfo.apiUrl
+            [String]$script:SavedB2ApiToken = $bbInfo.authorizationToken
+            [Uri]$script:SavedB2DownloadUri = $bbInfo.downloadUrl
             $bbReturnInfo = [PSCustomObject]@{
                 'AccountID' = $bbInfo.accountId
                 'ApiUri' = $bbInfo.apiUrl

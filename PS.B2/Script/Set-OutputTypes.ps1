@@ -1,5 +1,8 @@
 if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
 {
+    #Used to import the mime type finder in Set-B2BlobContent
+    Add-Type -AssemblyName System.Web
+
     #Adds account OutputType
     $account = @{
         MemberType = 'NoteProperty'
@@ -52,4 +55,15 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     Update-TypeData @blobProperty -MemberName FileID
     Update-TypeData @blobProperty -MemberName FileInfo
     Update-TypeData @blobProperty -MemberName FileName
+
+    #Adds uploaduri OutputType
+    $uploadUri = @{
+        MemberType = 'NoteProperty'
+        TypeName = 'PS.B2.UploadUri'
+        Value = $null
+    }
+
+    Update-TypeData @uploadUri -MemberName BucketID
+    Update-TypeData @uploadUri -MemberName UploadUri
+    Update-TypeData @uploadUri -MemberName Token
 }

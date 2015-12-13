@@ -17,6 +17,8 @@ function Get-B2ChildBlob
 	(
 		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$true,
+				   ValueFromPipeline=$true,
+				   ValueFromPipelineByPropertyName=$true,
 				   Position=0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]

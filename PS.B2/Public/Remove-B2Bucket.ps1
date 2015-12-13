@@ -58,7 +58,7 @@ function Remove-B2Bucket
 	{
 		foreach($bucket in $BucketID)
         {
-			if($Force -or $PSCmdlet.ShouldProcess("Deleting bucket $bucket."))
+			if($Force -or $PSCmdlet.ShouldProcess($bucket, "Delete bucket."))
         	{
 				[String]$sessionBody = @{'accountId'=$AccountID;'bucketId'=$bucket} | ConvertTo-Json
 			    $bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
