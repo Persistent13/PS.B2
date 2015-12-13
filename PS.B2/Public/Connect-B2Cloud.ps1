@@ -10,20 +10,32 @@ function Connect-B2Cloud
    An API key is required to use this cmdlet.
 .EXAMPLE
    Connect-B2Cloud
+   
+   AccountID       ApiUri                       DownloadUri                Token
+   ---------       ------                       -----------                -----
+   YOUR_ACCOUNT_ID https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
 
    The above command will prompt for the account ID and application key and save it for use in other PS.B2 modules.
+   The API uri, download uri, and authorization token will be returned if the cmdlet was successful.
 
 .EXAMPLE
    PS C:\>Connect-B2Cloud -AccountID YOUR_ACCOUNT_ID -ApplicationKey YOUR_APPLICATION_KEY
+   
+   AccountID       ApiUri                       DownloadUri                Token
+   ---------       ------                       -----------                -----
+   YOUR_ACCOUNT_ID https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
 
    The above command will take the account ID and application key given and save it for use in other PS.B2 modules.
+   The API uri, download uri, and authorization token will be returned if the cmdlet was successful.
 
 .INPUTS
    System.String
         
-       This cmdlet can take the API key as a string.
+       This cmdlet takes the AccountID and ApplicationKey as strings.
 .OUTPUTS
-   None
+   PS.B2.Account
+   
+       The cmdlet will output a PS.B2.Account object holding account authorization info.
 .ROLE
    PS.B2
 .FUNCTIONALITY

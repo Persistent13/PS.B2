@@ -1,15 +1,15 @@
 function Get-B2Bucket
 {
-	<#
-	.Synopsis
-		Short description
-	.DESCRIPTION
-		Long description
-	.EXAMPLE
-		Example of how to use this cmdlet
-	.EXAMPLE
-		Another example of how to use this cmdlet
-	#>
+<#
+.Synopsis
+	Short description
+.DESCRIPTION
+	Long description
+.EXAMPLE
+	Example of how to use this cmdlet
+.EXAMPLE
+	Another example of how to use this cmdlet
+#>
 	[CmdletBinding(SupportsShouldProcess=$false)]
 	[Alias('gb2b')]
 	[OutputType('PS.B2.Bucket')]
