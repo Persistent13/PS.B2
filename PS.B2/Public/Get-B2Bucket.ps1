@@ -2,13 +2,36 @@ function Get-B2Bucket
 {
 <#
 .Synopsis
-	Short description
+	Get-B2Bucket will ist the buckets associated with the API token.
 .DESCRIPTION
-	Long description
+	Get-B2Bucket will ist the buckets associated with the API token.
+	
+	An API key is required to use this cmdlet.
 .EXAMPLE
-	Example of how to use this cmdlet
-.EXAMPLE
-	Another example of how to use this cmdlet
+	Get-B2Bucket
+	
+	BucketName       BucketID                 BucketType AccountID
+	----------       --------                 ---------- ---------
+	awsome-jack-fang 4a48fe8875c6214145260818 allPrivate 30f20426f0b1
+	Kitten Videos    5b232e8875c6214145260818 allPublic  30f20426f0b1
+	
+	The cmdlet above will return all buckets for the account.
+.INPUTS
+	System.String
+			
+		This cmdlet takes the AccountID and ApplicationKey as strings.
+		
+   	System.Uri
+   
+   		This cmdlet takes the ApiUri as a Uri.
+.OUTPUTS
+	PS.B2.Bucket
+	
+		The cmdlet will output a PS.B2.Bucket object holding the bucket info.
+.ROLE
+	PS.B2
+.FUNCTIONALITY
+	PS.B2	
 #>
 	[CmdletBinding(SupportsShouldProcess=$false)]
 	[Alias('gb2b')]

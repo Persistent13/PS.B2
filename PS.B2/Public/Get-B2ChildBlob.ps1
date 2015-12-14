@@ -1,21 +1,39 @@
 function Get-B2ChildBlob
 {
-	<#
-	.Synopsis
-		Short description
-	.DESCRIPTION
-		Long description
-	.EXAMPLE
-		Example of how to use this cmdlet
-	.EXAMPLE
-		Another example of how to use this cmdlet
-	#>
+<#
+.Synopsis
+	The Get-B2ChildBlob cmdlet will return the file list of a bucket.
+.DESCRIPTION
+	The Get-B2ChildBlob cmdlet will return the file list of a bucket.
+	By default the selection is limited to the first 1000 items, to increment the
+	selection use the {{NEED TO IMPLEMENT - CHANGE ME PLS}}
+	
+	An API key is required to use this cmdlet.
+.EXAMPLE
+	Get-B2ChildBlob -BucketID 4a48fe8875c6214145260818
+	
+	FileName   : files/hello.txt
+	Size       : 6
+	UploadTime : 1439083733000
+	Action     : upload
+	FileID     : 4_z27c88f1d182b150646ff0b16_f1004ba650fe24e6b_d20150809_m012853_c100_v0009990_t0000
+	
+	FileName   : files/world.txt
+	Size       : 6
+	UploadTime : 1439083734000
+	Action     : upload
+	FileID     : 4_z27c88f1d182b150646ff0b16_f1004ba650fe24e6c_d20150809_m012854_c100_v0009990_t0000
+	
+	The cmdlet above will list all files in the given bucket.
+.EXAMPLE
+	Another example of how to use this cmdlet
+#>
 	[CmdletBinding(SupportsShouldProcess=$false)]
 	[Alias('gb2cb')]
 	[OutputType('PS.B2.Blob')]
 	Param
 	(
-		# The Uri for the B2 Api query.
+		# Used to pass the ID of the bucket.
 		[Parameter(Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,
@@ -32,12 +50,6 @@ function Get-B2ChildBlob
 		# The authorization token for the B2 account.
 		[Parameter(Mandatory=$false,
 				   Position=2)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
-		[String]$AccountID = $script:SavedB2AccountID,
-		# The authorization token for the B2 account.
-		[Parameter(Mandatory=$false,
-				   Position=3)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
 		[String]$ApiToken = $script:SavedB2ApiToken

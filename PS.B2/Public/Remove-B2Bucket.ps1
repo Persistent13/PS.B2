@@ -23,7 +23,6 @@ function Remove-B2Bucket
 				   Position=0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-		[ValidateLength(1,50)]
 		[String[]]$BucketID,
         # Used to bypass confirmation prompts.
         [Parameter(Mandatory=$false,

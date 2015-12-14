@@ -83,12 +83,6 @@ function Get-B2BlobProperty
 				   Position=2)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-		[String]$AccountID = $script:SavedB2AccountID,
-		# The authorization token for the B2 account.
-		[Parameter(Mandatory=$false,
-				   Position=3)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
 		[String]$ApiToken = $script:SavedB2ApiToken
 	)
 	

@@ -64,12 +64,6 @@ function Invoke-B2BlobRequest
 		[Parameter(Mandatory=$false,ParameterSetName='FileID')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-		[String]$AccountID = $script:SavedB2AccountID,
-		# The authorization token for the B2 account.
-		[Parameter(Mandatory=$false,ParameterSetName='FileName')]
-		[Parameter(Mandatory=$false,ParameterSetName='FileID')]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
 		[String]$ApiToken = $script:SavedB2ApiToken
 	)
 	

@@ -48,12 +48,6 @@ function Hide-B2Blob
 				   Position=4)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-		[String]$AccountID = $script:SavedB2AccountID,
-		# The authorization token for the B2 account.
-		[Parameter(Mandatory=$false,
-				   Position=5)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
 		[String]$ApiToken = $script:SavedB2ApiToken
 	)
 	

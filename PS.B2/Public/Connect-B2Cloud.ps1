@@ -13,7 +13,7 @@ function Connect-B2Cloud
    
    AccountID       ApiUri                       DownloadUri                Token
    ---------       ------                       -----------                -----
-   YOUR_ACCOUNT_ID https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
+   30f20426f0b1    https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
 
    The above command will prompt for the account ID and application key and save it for use in other PS.B2 modules.
    The API uri, download uri, and authorization token will be returned if the cmdlet was successful.
@@ -23,7 +23,7 @@ function Connect-B2Cloud
    
    AccountID       ApiUri                       DownloadUri                Token
    ---------       ------                       -----------                -----
-   YOUR_ACCOUNT_ID https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
+   30f20426f0b1    https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
 
    The above command will take the account ID and application key given and save it for use in other PS.B2 modules.
    The API uri, download uri, and authorization token will be returned if the cmdlet was successful.
