@@ -2,44 +2,46 @@ function Connect-B2Cloud
 {
 <#
 .Synopsis
-   The Connect-B2Cloud cmdlet sets the API key for the Backblaze B2 module cmdlets.
+    The Connect-B2Cloud cmdlet sets the API key for the Backblaze B2 module cmdlets.
 .DESCRIPTION
-   The Connect-B2Cloud cmdlet sets the API key for the Backblaze B2 module cmdlets.
-   The application key and account ID can be obtained from your Backblaze B2 account page.
+    The Connect-B2Cloud cmdlet sets the API key for the Backblaze B2 module cmdlets.
+    The application key and account ID can be obtained from your Backblaze B2 account page.
 
-   An API key is required to use this cmdlet.
+    An API key is required to use this cmdlet.
 .EXAMPLE
-   Connect-B2Cloud
+    Connect-B2Cloud
    
-   AccountID       ApiUri                       DownloadUri                Token
-   ---------       ------                       -----------                -----
-   30f20426f0b1    https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
+    AccountID       ApiUri                       DownloadUri                Token
+    ---------       ------                       -----------                -----
+    30f20426f0b1    https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
 
-   The above command will prompt for the account ID and application key and save it for use in other PS.B2 modules.
-   The API uri, download uri, and authorization token will be returned if the cmdlet was successful.
+    The above command will prompt for the account ID and application key and save it for use in other PS.B2 modules.
+    The API uri, download uri, and authorization token will be returned if the cmdlet was successful.
 
 .EXAMPLE
-   PS C:\>Connect-B2Cloud -AccountID YOUR_ACCOUNT_ID -ApplicationKey YOUR_APPLICATION_KEY
+    PS C:\>Connect-B2Cloud -AccountID 30f20426f0b1 -ApplicationKey YOUR_APPLICATION_KEY
    
-   AccountID       ApiUri                       DownloadUri                Token
-   ---------       ------                       -----------                -----
-   30f20426f0b1    https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
+    AccountID       ApiUri                       DownloadUri                Token
+    ---------       ------                       -----------                -----
+    30f20426f0b1    https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
 
-   The above command will take the account ID and application key given and save it for use in other PS.B2 modules.
-   The API uri, download uri, and authorization token will be returned if the cmdlet was successful.
+    The above command will take the account ID and application key given and save it for use in other PS.B2 modules.
+    The API uri, download uri, and authorization token will be returned if the cmdlet was successful.
 
 .INPUTS
-   System.String
-        
-       This cmdlet takes the AccountID and ApplicationKey as strings.
+    System.String
+
+        This cmdlet takes the AccountID and ApplicationKey as strings.
 .OUTPUTS
-   PS.B2.Account
-   
-       The cmdlet will output a PS.B2.Account object holding account authorization info.
+    PS.B2.Account
+
+        The cmdlet will output a PS.B2.Account object holding account authorization info.
+.LINK
+    https://www.backblaze.com/b2/docs/
 .ROLE
-   PS.B2
+    PS.B2
 .FUNCTIONALITY
-   PS.B2
+    PS.B2
 #>
     [CmdletBinding(SupportsShouldProcess=$false,
                    PositionalBinding=$true)]
@@ -75,6 +77,8 @@ function Connect-B2Cloud
                 throw 'You must specify the account ID and application key.'
             }
         }
+        # Invoke-RestMethod cannot be used with the -Crednetial paramter.
+        # B2 authentication breaks RFC2617 and the authroization header must be crafted manually.
         [String]$plainCreds = "${AccountID}:${ApplicationKey}"
         [String]$encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($plainCreds))
         [Hashtable]$sessionHeaders = @{'Authorization'="Basic $encodedCreds"}
