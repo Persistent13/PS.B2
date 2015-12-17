@@ -41,15 +41,27 @@ function Get-B2ChildBlob
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
 		[String[]]$BucketID,
-		# The Uri for the B2 Api query.
+		# The name of the file to start listing from.
 		[Parameter(Mandatory=$false,
 				   Position=1)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+		[String]$StartName,
+		# The number of files to return; the default and max is 1000.
+		[Parameter(Mandatory=$false,
+				   Position=1)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+		[UInt32]$FileCount = 1000,
+		# The Uri for the B2 Api query.
+		[Parameter(Mandatory=$false,
+				   Position=2)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
 		[Uri]$ApiUri = $script:SavedB2ApiUri,
 		# The authorization token for the B2 account.
 		[Parameter(Mandatory=$false,
-				   Position=2)]
+				   Position=3)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
 		[String]$ApiToken = $script:SavedB2ApiToken
@@ -64,7 +76,7 @@ function Get-B2ChildBlob
 	{
 		foreach($bucket in $BucketID)
 		{
-			[String]$sessionBody = @{'bucketId'=$bucket} | ConvertTo-Json
+			[String]$sessionBody = @{'bucketId'=$bucket;'maxFileCount'=$FileCount;'startFileName'=$StartName} | ConvertTo-Json
 			$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
 			foreach($info in $bbInfo.files)
 			{
