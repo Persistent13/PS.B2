@@ -43,21 +43,23 @@ function Get-B2BlobProperty
 	
 	The cmdlets above get the blob properties for all blobs in all buckets.
 .INPUTS
-   	System.String
-   
-       	This cmdlet takes the FieldID, AccountID and ApiToken as strings.
-	   
-   	System.Uri
-   
-       	This cmdlet takes the ApiUri as a Uri.
+	System.String
+	
+		This cmdlet takes the FieldID, AccountID and ApiToken as strings.
+		
+	System.Uri
+	
+		This cmdlet takes the ApiUri as a Uri.
 .OUTPUTS
-   	PS.B2.BlobProperty
-   
-       	This cmdlet will output a PS.B2.BlobProperty object holding the blob properties.
+	PS.B2.BlobProperty
+	
+		This cmdlet will output a PS.B2.BlobProperty object holding the blob properties.
+.LINK
+	https://www.backblaze.com/b2/docs/
 .ROLE
-   	PS.B2
+	PS.B2
 .FUNCTIONALITY
-   	PS.B2
+	PS.B2
 #>
 	[CmdletBinding(SupportsShouldProcess=$false)]
 	[Alias('gb2bi')]
@@ -69,20 +71,20 @@ function Get-B2BlobProperty
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,
 				   Position=0)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[String[]]$FileID,
 		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$false,
 				   Position=1)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[Uri]$ApiUri = $script:SavedB2ApiUri,
 		# The authorization token for the B2 account.
 		[Parameter(Mandatory=$false,
 				   Position=2)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[String]$ApiToken = $script:SavedB2ApiToken
 	)
 	

@@ -16,7 +16,7 @@ function Remove-B2Bucket
 	[OutputType('PS.B2.Bucket')]
 	Param
 	(
-		# The ID of the new B2 bucket.
+		# The ID of the bucket to remove.
 		[Parameter(Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,

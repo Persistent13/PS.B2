@@ -18,20 +18,22 @@ function Get-B2Bucket
 	The cmdlet above will return all buckets for the account.
 .INPUTS
 	System.String
-			
+	
 		This cmdlet takes the AccountID and ApplicationKey as strings.
 		
-   	System.Uri
-   
-   		This cmdlet takes the ApiUri as a Uri.
+	System.Uri
+	
+		This cmdlet takes the ApiUri as a Uri.
 .OUTPUTS
 	PS.B2.Bucket
 	
 		The cmdlet will output a PS.B2.Bucket object holding the bucket info.
+.LINK
+	https://www.backblaze.com/b2/docs/
 .ROLE
 	PS.B2
 .FUNCTIONALITY
-	PS.B2	
+	PS.B2
 #>
 	[CmdletBinding(SupportsShouldProcess=$false)]
 	[Alias('gb2b')]
@@ -41,20 +43,20 @@ function Get-B2Bucket
 		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$false,
 				   Position=0)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[Uri]$ApiUri = $script:SavedB2ApiUri,
 		# The authorization token for the B2 account.
 		[Parameter(Mandatory=$false,
 				   Position=1)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[String]$AccountID = $script:SavedB2AccountID,
 		# The authorization token for the B2 account.
 		[Parameter(Mandatory=$false,
 				   Position=2)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[String]$ApiToken = $script:SavedB2ApiToken
 	)
 	

@@ -64,7 +64,7 @@ function Connect-B2Cloud
         [Alias('Key')]
         [String]$ApplicationKey
     )
-
+    
     Begin
     {
         if(-not $AccountID -or -not $ApplicationKey)
@@ -99,8 +99,8 @@ function Connect-B2Cloud
                 'DownloadUri' = $bbInfo.downloadUrl
                 'Token' = $bbInfo.authorizationToken
             }
-			# bbReturnInfo is returned after Add-ObjectDetail is processed.
-			Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Account'
+            # bbReturnInfo is returned after Add-ObjectDetail is processed.
+            Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Account'
         }
         catch
         {

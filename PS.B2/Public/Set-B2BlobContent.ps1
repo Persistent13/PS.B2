@@ -28,7 +28,7 @@ function Set-B2BlobContent
 	[OutputType('PS.B2.BlobProperty')]
 	Param
 	(
-		# Param1 help description
+		# The ID of the bucket to update.
 		[Parameter(Mandatory=$true, 
 				   Position=0)]
 		[ValidateNotNull()]

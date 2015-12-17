@@ -23,7 +23,7 @@ function Hide-B2Blob
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
 		[String[]]$FileName,
-		# The Uri for the B2 Api query.
+		# The ID of the bucket to query.
 		[Parameter(Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,

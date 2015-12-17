@@ -57,9 +57,9 @@ function Get-B2BlobVersion
 			
 		This cmdlet takes the AccountID and ApplicationKey as strings.
 		
-   	System.Uri
-   
-   		This cmdlet takes the ApiUri as a Uri.
+	System.Uri
+	
+		This cmdlet takes the ApiUri as a Uri.
 .OUTPUTS
 	PS.B2.Blob
 	
@@ -74,25 +74,25 @@ function Get-B2BlobVersion
 	[OutputType('PS.B2.Blob')]
 	Param
 	(
-		# The Uri for the B2 Api query.
+		# The ID of the bucket to query.
 		[Parameter(Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,
 				   Position=0)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[String[]]$BucketID,
 		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$false,
 				   Position=1)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[Uri]$ApiUri = $script:SavedB2ApiUri,
 		# The authorization token for the B2 account.
 		[Parameter(Mandatory=$false,
 				   Position=2)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[String]$ApiToken = $script:SavedB2ApiToken
 	)
 	

@@ -16,7 +16,7 @@ function Set-B2Bucket
 	[OutputType('PS.B2.Bucket')]
 	Param
 	(
-		# The ID of the new B2 bucket.
+		# The ID of the bucket to update.
 		[Parameter(Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,

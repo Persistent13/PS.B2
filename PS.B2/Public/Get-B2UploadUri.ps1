@@ -27,7 +27,7 @@ function Get-B2UploadUri
 	[OutputType('PS.B2.UploadUri')]
 	Param
 	(
-		# Param1 help description
+		# The ID of the bucket to query.
 		[Parameter(Mandatory=$true,
 				   ValueFromPipelineByPropertyName=$true,
 				   ValueFromPipeline=$true,
