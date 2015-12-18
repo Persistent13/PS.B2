@@ -97,20 +97,29 @@ function Get-B2BlobProperty
 	{
 		foreach($file in $FileID)
 		{
-			[String]$sessionBody = @{'fileId'=$file} | ConvertTo-Json
-			$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
-			$bbReturnInfo = [PSCustomObject]@{
-				'FileName' = $bbInfo.fileName
-				'FileInfo' = $bbInfo.fileInfo
-				'ContentType' = $bbInfo.contentType
-				'ContentLength' = $bbInfo.contentLength
-				'BucketID' = $bbInfo.bucketId
-				'AccountID' = $bbInfo.accountId
-				'ContentSHA1' = $bbInfo.contentSha1
-				'FileID' = $bbInfo.fileId
+			try
+			{
+				[String]$sessionBody = @{'fileId'=$file} | ConvertTo-Json
+				$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
+				$bbReturnInfo = [PSCustomObject]@{
+					'FileName' = $bbInfo.fileName
+					'FileInfo' = $bbInfo.fileInfo
+					'ContentType' = $bbInfo.contentType
+					'ContentLength' = $bbInfo.contentLength
+					'BucketID' = $bbInfo.bucketId
+					'AccountID' = $bbInfo.accountId
+					'ContentSHA1' = $bbInfo.contentSha1
+					'FileID' = $bbInfo.fileId
+				}
+				# bbReturnInfo is returned after Add-ObjectDetail is processed.
+				Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.BlobProperty'
 			}
-			# bbReturnInfo is returned after Add-ObjectDetail is processed.
-			Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.BlobProperty'
+			catch
+			{
+				$errorDetail = $_.Exception.Message
+				Write-Error -Exception "Unable to retrieve the file information.`n`r$errorDetail" `
+					-Message "Unable to retrieve the file information.`n`r$errorDetail" -Category ReadError
+			}
 		}
 	}
 }

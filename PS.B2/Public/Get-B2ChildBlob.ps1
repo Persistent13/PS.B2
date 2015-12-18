@@ -51,9 +51,9 @@ function Get-B2ChildBlob
 .LINK
 	https://www.backblaze.com/b2/docs/
 .ROLE
-    PS.B2
+	PS.B2
 .FUNCTIONALITY
-    PS.B2
+	PS.B2
 #>
 	[CmdletBinding(SupportsShouldProcess=$false)]
 	[Alias('gb2cb')]
@@ -103,19 +103,28 @@ function Get-B2ChildBlob
 	{
 		foreach($bucket in $BucketID)
 		{
-			[String]$sessionBody = @{'bucketId'=$bucket;'maxFileCount'=$FileCount;'startFileName'=$StartName} | ConvertTo-Json
-			$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
-			foreach($info in $bbInfo.files)
+			try
 			{
-				$bbReturnInfo = [PSCustomObject]@{
-					'FileName' = $info.fileName
-					'Size' = $info.size
-					'UploadTime' = $info.uploadTimestamp
-					'Action' = $info.action
-					'FileID' = $info.fileId
+				[String]$sessionBody = @{'bucketId'=$bucket;'maxFileCount'=$FileCount;'startFileName'=$StartName} | ConvertTo-Json
+				$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
+				foreach($info in $bbInfo.files)
+				{
+					$bbReturnInfo = [PSCustomObject]@{
+						'FileName' = $info.fileName
+						'Size' = $info.size
+						'UploadTime' = $info.uploadTimestamp
+						'Action' = $info.action
+						'FileID' = $info.fileId
+					}
+					# bbReturnInfo is returned after Add-ObjectDetail is processed.
+					Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Blob'
 				}
-				# bbReturnInfo is returned after Add-ObjectDetail is processed.
-				Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Blob'
+			}
+			catch
+			{
+				$errorDetail = $_.Exception.Message
+				Write-Error -Exception "Unable to retrieve the file list.`n`r$errorDetail" `
+					-Message "Unable to retrieve the file list.`n`r$errorDetail" -Category ReadError
 			}
 		}
 	}

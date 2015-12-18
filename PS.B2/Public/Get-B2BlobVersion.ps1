@@ -105,19 +105,28 @@ function Get-B2BlobVersion
 	{
 		foreach($bucket in $BucketID)
 		{
-			[String]$sessionBody = @{'bucketId'=$bucket} | ConvertTo-Json
-			$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
-			foreach($info in $bbInfo.files)
+			try
 			{
-				$bbReturnInfo = [PSCustomObject]@{
-					'FileName' = $info.fileName
-					'Size' = $info.size
-					'UploadTime' = $info.uploadTimestamp
-					'Action' = $info.action
-					'FileID' = $info.fileId
+				[String]$sessionBody = @{'bucketId'=$bucket} | ConvertTo-Json
+				$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
+				foreach($info in $bbInfo.files)
+				{
+					$bbReturnInfo = [PSCustomObject]@{
+						'FileName' = $info.fileName
+						'Size' = $info.size
+						'UploadTime' = $info.uploadTimestamp
+						'Action' = $info.action
+						'FileID' = $info.fileId
+					}
+					# bbReturnInfo is returned after Add-ObjectDetail is processed.
+					Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Blob'
 				}
-				# bbReturnInfo is returned after Add-ObjectDetail is processed.
-				Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Blob'
+			}
+			catch
+			{
+				$errorDetail = $_.Exception.Message
+				Write-Error -Exception "Unable to retrieve the file information.`n`r$errorDetail" `
+					-Message "Unable to retrieve the file information.`n`r$errorDetail" -Category ReadError
 			}
 		}
 	}

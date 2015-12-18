@@ -1,15 +1,15 @@
 function Hide-B2Blob
 {
-	<#
-	.Synopsis
-		Short description
-	.DESCRIPTION
-		Long description
-	.EXAMPLE
-		Example of how to use this cmdlet
-	.EXAMPLE
-		Another example of how to use this cmdlet
-	#>
+<#
+.Synopsis
+	Short description
+.DESCRIPTION
+	Long description
+.EXAMPLE
+	Example of how to use this cmdlet
+.EXAMPLE
+	Another example of how to use this cmdlet
+#>
 	[CmdletBinding(SupportsShouldProcess=$true)]
 	[Alias('hb2b')]
 	[OutputType('PS.B2.Blob')]
@@ -20,34 +20,34 @@ function Hide-B2Blob
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,
 				   Position=0)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[String[]]$FileName,
 		# The ID of the bucket to query.
 		[Parameter(Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,
 				   Position=1)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[String]$BucketID,
-        # Used to bypass confirmation prompts.
-        [Parameter(Mandatory=$false,
-                   Position=2)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
-        [Switch]$Force,
+		# Used to bypass confirmation prompts.
+		[Parameter(Mandatory=$false,
+				   Position=2)]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
+		[Switch]$Force,
 		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$false,
 				   Position=3)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[Uri]$ApiUri = $script:SavedB2ApiUri,
 		# The authorization token for the B2 account.
 		[Parameter(Mandatory=$false,
 				   Position=4)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[String]$ApiToken = $script:SavedB2ApiToken
 	)
 	
@@ -62,17 +62,26 @@ function Hide-B2Blob
 		{
 			if($Force -or $PSCmdlet.ShouldProcess($file, "Hiding blob in bucket $BucketID."))
 			{
-				[String]$sessionBody = @{'bucketId'=$BucketID;'fileName'=$file} | ConvertTo-Json
-				$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
-				$bbReturnInfo = [PSCustomObject]@{
-					'FileName' = $bbInfo.fileName
-					'Size' = $bbInfo.size
-					'UploadTime' = $bbInfo.uploadTimestamp
-					'Action' = $bbInfo.action
-					'FileID' = $bbInfo.fileId
+				try
+				{
+					[String]$sessionBody = @{'bucketId'=$BucketID;'fileName'=$file} | ConvertTo-Json
+					$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
+					$bbReturnInfo = [PSCustomObject]@{
+						'FileName' = $bbInfo.fileName
+						'Size' = $bbInfo.size
+						'UploadTime' = $bbInfo.uploadTimestamp
+						'Action' = $bbInfo.action
+						'FileID' = $bbInfo.fileId
+					}
+					# bbReturnInfo is returned after Add-ObjectDetail is processed.
+					Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Blob'
 				}
-				# bbReturnInfo is returned after Add-ObjectDetail is processed.
-				Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Blob'
+				catch
+				{
+					$errorDetail = $_.Exception.Message
+					Write-Error -Exception "Unable to hide the file.`n`r$errorDetail" `
+						-Message "Unable to hide the file.`n`r$errorDetail" -Category InvalidOperation
+				}
 			}
 		}
 	}

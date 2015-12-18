@@ -1,54 +1,63 @@
 function Remove-B2BlobVersion
 {
-	<#
-	.Synopsis
-		Short description
-	.DESCRIPTION
-		Long description
-	.EXAMPLE
-		Example of how to use this cmdlet
-	.EXAMPLE
-		Another example of how to use this cmdlet
-	#>
+<#
+.Synopsis
+	Remove-B2BlobVersion will remove the version of a given file.
+	If this is the only version the file will be deleted.
+	
+	An API key is required to use this cmdlet.
+.DESCRIPTION
+	Long description
+.EXAMPLE
+	Example of how to use this cmdlet
+.EXAMPLE
+	Another example of how to use this cmdlet
+.LINK
+	https://www.backblaze.com/b2/docs/
+.ROLE
+	PS.B2
+.FUNCTIONALITY
+	PS.B2
+#>
 	[CmdletBinding(SupportsShouldProcess=$true,
 				   ConfirmImpact='High')]
 	[Alias('rb2bv')]
 	[OutputType('PS.B2.RemoveBlob')]
 	Param
 	(
-		# The Uri for the B2 Api query.
+		# The ID of the file to delete.
 		[Parameter(Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,
 				   Position=0)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[String[]]$FileID,
-		# The Uri for the B2 Api query.
+		# The Name of the file to delete.
 		[Parameter(Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,
 				   Position=1)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[String[]]$FileName,
-        # Used to bypass confirmation prompts.
-        [Parameter(Mandatory=$false,
-                   Position=2)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
-        [Switch]$Force,
+		# Used to bypass confirmation prompts.
+		[Parameter(Mandatory=$false,
+				   Position=2)]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
+		[Switch]$Force,
 		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$false,
 				   Position=3)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[Uri]$ApiUri = $script:SavedB2ApiUri,
 		# The authorization token for the B2 account.
 		[Parameter(Mandatory=$false,
 				   Position=4)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
+		[ValidateNotNull()]
+		[ValidateNotNullOrEmpty()]
 		[String]$ApiToken = $script:SavedB2ApiToken
 	)
 	
@@ -69,14 +78,23 @@ function Remove-B2BlobVersion
 		{
 			if($Force -or $PSCmdlet.ShouldProcess($b2FileArray[0][$i], 'Remove file version.'))
 			{
-				[String]$sessionBody = @{'fileId'=$b2FileArray[0][$i];'fileName'=$b2FileArray[1][$i]} | ConvertTo-Json
-				$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
-				$bbReturnInfo = [PSCustomObject]@{
-					'FileName' = $bbInfo.fileName
-					'FileID' = $bbInfo.fileId
+				try
+				{
+					[String]$sessionBody = @{'fileId'=$b2FileArray[0][$i];'fileName'=$b2FileArray[1][$i]} | ConvertTo-Json
+					$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
+					$bbReturnInfo = [PSCustomObject]@{
+						'FileName' = $bbInfo.fileName
+						'FileID' = $bbInfo.fileId
+					}
+					# bbReturnInfo is returned after Add-ObjectDetail is processed.
+					Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.RemoveBlob'
 				}
-				# bbReturnInfo is returned after Add-ObjectDetail is processed.
-				Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.RemoveBlob'
+				catch
+				{
+					$errorDetail = $_.Exception.Message
+					Write-Error -Exception "Unable to delete the file version.`n`r$errorDetail" `
+						-Message "Unable to delete the file version.`n`r$errorDetail" -Category InvalidOperation
+				}
 			}
 		}
 	}
