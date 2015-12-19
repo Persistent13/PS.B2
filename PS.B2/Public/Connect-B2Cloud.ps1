@@ -70,9 +70,12 @@ function Connect-B2Cloud
         if(-not $AccountID -or -not $ApplicationKey)
         {
             [PSCredential]$b2Creds = Get-Credential -Message 'Enter your B2 account ID and application key below.'
-            [String]$AccountID = $b2Creds.GetNetworkCredential().UserName
-            [String]$ApplicationKey = $b2Creds.GetNetworkCredential().Password
-            if(-not $AccountID -or -not $ApplicationKey)
+            try
+            {
+                [String]$AccountID = $b2Creds.GetNetworkCredential().UserName
+                [String]$ApplicationKey = $b2Creds.GetNetworkCredential().Password
+            }
+            catch
             {
                 throw 'You must specify the account ID and application key.'
             }
