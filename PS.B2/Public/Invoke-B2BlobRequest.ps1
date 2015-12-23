@@ -2,13 +2,38 @@ function Invoke-B2BlobRequest
 {
 <#
 .Synopsis
-	Short description
+	The Invoke-B2BlobRequest cmdlet downloads files by either the file ID or file name.
 .DESCRIPTION
-	Long description
+	The Invoke-B2BlobRequest cmdlet downloads files by either the file ID or file name.
+    When downloading by the file name the bucket ID the file resides in must be specified.
+    
+    An API key is reuqired to use this cmdlet.
 .EXAMPLE
-	Example of how to use this cmdlet
+	Invoke-B2BlobRequest -FileID 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0104 -OutFile C:\hello.txt
+    
+    The cmdlet above will download the file with the given ID and place it at the root of the C: drive with the name hello.txt.
 .EXAMPLE
-	Another example of how to use this cmdlet
+	PS C:\>Invoke-B2BlobRequest -FileName hello.txt -BucketName text -OutFile C:\hello.txt
+    
+    The cmdlet above will download the file with the given name from the given bucket name and place it at the root of the C: drive with the name hello.txt.
+.INPUTS
+	System.String
+	
+		This cmdlet takes the FileID, FileName, BucketName, OutFile, and ApiToken as strings.
+	
+	System.Uri
+	
+		This cmdlet takes the ApiUri as a uri.
+.OUTPUTS
+	None
+	
+		The cmdlet has no outputs.
+.LINK
+	https://www.backblaze.com/b2/docs/
+.ROLE
+	PS.B2
+.FUNCTIONALITY
+	PS.B2
 #>
 	[CmdletBinding(SupportsShouldProcess=$true,
 				   ConfirmImpact='Low')]
