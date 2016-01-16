@@ -1,6 +1,6 @@
 if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
 {
-    #Used to import the mime type finder in Set-B2BlobContent
+    #Used to import the mime type finder in Set-B2FileContent
     Add-Type -AssemblyName System.Web
 
     #Adds account OutputType
@@ -27,34 +27,34 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     Update-TypeData @bucket -MemberName BucketType
     Update-TypeData @bucket -MemberName AccountID
 
-    #Adds blob OutputType
-    $blob = @{
+    #Adds file OutputType
+    $file = @{
         MemberType = 'NoteProperty'
-        TypeName = 'PS.B2.Blob'
+        TypeName = 'PS.B2.File'
         Value = $null
     }
     
-    Update-TypeData @blob -MemberName Action
-    Update-TypeData @blob -MemberName FileID
-    Update-TypeData @blob -MemberName FileName
-    Update-TypeData @blob -MemberName Size
-    Update-TypeData @blob -MemberName UploadTime
+    Update-TypeData @file -MemberName Action
+    Update-TypeData @file -MemberName ID
+    Update-TypeData @file -MemberName Name
+    Update-TypeData @file -MemberName Size
+    Update-TypeData @file -MemberName UploadTime
 
-    #Adds blobProperty OutputType
-    $blobProperty = @{
+    #Adds fileProperty OutputType
+    $fileProperty = @{
         MemberType = 'NoteProperty'
-        TypeName = 'PS.B2.BlobProperty'
+        TypeName = 'PS.B2.FileProperty'
         Value = $null
     }
     
-    Update-TypeData @blobProperty -MemberName AccountID
-    Update-TypeData @blobProperty -MemberName BucketID
-    Update-TypeData @blobProperty -MemberName ContentLength
-    Update-TypeData @blobProperty -MemberName ContentSHA1
-    Update-TypeData @blobProperty -MemberName ContentType
-    Update-TypeData @blobProperty -MemberName FileID
-    Update-TypeData @blobProperty -MemberName FileInfo
-    Update-TypeData @blobProperty -MemberName FileName
+    Update-TypeData @fileProperty -MemberName AccountID
+    Update-TypeData @fileProperty -MemberName BucketID
+    Update-TypeData @fileProperty -MemberName ContentLength
+    Update-TypeData @fileProperty -MemberName ContentSHA1
+    Update-TypeData @fileProperty -MemberName ContentType
+    Update-TypeData @fileProperty -MemberName ID
+    Update-TypeData @fileProperty -MemberName FileInfo
+    Update-TypeData @fileProperty -MemberName Name
 
     #Adds uploadUri OutputType
     $uploadUri = @{
@@ -67,13 +67,13 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     Update-TypeData @uploadUri -MemberName UploadUri
     Update-TypeData @uploadUri -MemberName Token
 
-    #Adds removeBlob OutputType
-    $removeBlob = @{
+    #Adds removeFile OutputType
+    $removeFile = @{
         MemberType = 'NoteProperty'
-        TypeName = 'PS.B2.RemoveBlob'
+        TypeName = 'PS.B2.RemoveFile'
         Value = $null
     }
 
-    Update-TypeData @removeBlob -MemberName FileID
-    Update-TypeData @removeBlob -MemberName FileName
+    Update-TypeData @removeFile -MemberName ID
+    Update-TypeData @removeFile -MemberName Name
 }

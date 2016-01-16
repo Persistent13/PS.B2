@@ -1,47 +1,47 @@
-function Get-B2BlobProperty
+function Get-B2ItemProperty
 {
 <#
 .Synopsis
-	The Get-B2BlobProperty cmdlet will pull blob information.
+	The Get-B2ItemProperty cmdlet will pull file information.
 .DESCRIPTION
-	The Get-B2BlobProperty cmdlet will pull blob information on the specified file ID.
+	The Get-B2ItemProperty cmdlet will pull file information on the specified file ID.
 	
 	An API key is required to use this cmdlet.
 .EXAMPLE
-	Get-B2BlobProperty -FileID 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0001
+	Get-B2ItemProperty -ID 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0001
 	
-	FileName      : akitty.jpg
-	FileInfo      :
+	Name          : akitty.jpg
+	ItemInfo      :
 	ContentType   : image/jpeg
 	ContentLength : 122573
 	BucketID      : e73ede9c9c8412db49f60715
 	AccountID     : 7eecc42b9675
 	ContentSHA1   : a01a21253a07fb08a354acd30f3a6f32abb76821
-	FileID        : 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0001
+	ID            : 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0001
 	
-	The cmdlet above returns the blob properties for the FileID given.
+	The cmdlet above returns the item properties for the ID given.
 .EXAMPLE
-	PS C:\>Get-B2Bucket | Get-B2ChildBlob | Get-B2BlobProperty
+	PS C:\>Get-B2Bucket | Get-B2ChildItem | Get-B2ItemProperty
 	
-	FileName      : akitty.jpg
-	FileInfo      :
+	Name          : akitty.jpg
+	ItemInfo      :
 	ContentType   : image/jpeg
 	ContentLength : 122573
 	BucketID      : e73ede9c9c8412db49f60715
 	AccountID     : 7eecc42b9675
 	ContentSHA1   : a01a21253a07fb08a354acd30f3a6f32abb76821
-	FileID        : 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0001
+	ID            : 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0001
 	
-	FileName      : adoggy.jpg
-	FileInfo      : @{author=John}
+	Name          : adoggy.jpg
+	ItemInfo      : @{author=John}
 	ContentType   : image/jpeg
 	ContentLength : 165237
 	BucketID      : e73ede9c9c8412db49f60717
 	AccountID     : 7eecc42b9675
 	ContentSHA1   : 3100d797d8c0282aeb0afac63f0795117892d2fd
-	FileID        : 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0002
+	ID            : 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0002
 	
-	The cmdlets above get the blob properties for all blobs in all buckets.
+	The cmdlets above get the file properties for all files in all buckets.
 .INPUTS
 	System.String
 	
@@ -51,9 +51,9 @@ function Get-B2BlobProperty
 	
 		This cmdlet takes the ApiUri as a Uri.
 .OUTPUTS
-	PS.B2.BlobProperty
+	PS.B2.FileProperty
 	
-		This cmdlet will output a PS.B2.BlobProperty object holding the blob properties.
+		This cmdlet will output a PS.B2.FileProperty object holding the file properties.
 .LINK
 	https://www.backblaze.com/b2/docs/
 .ROLE
@@ -62,8 +62,8 @@ function Get-B2BlobProperty
 	PS.B2
 #>
 	[CmdletBinding(SupportsShouldProcess=$false)]
-	[Alias('gb2bi')]
-	[OutputType('PS.B2.BlobProperty')]
+	[Alias('gb2ip')]
+	[OutputType('PS.B2.FileProperty')]
 	Param
 	(
 		# The Uri for the B2 Api query.
@@ -73,7 +73,7 @@ function Get-B2BlobProperty
 				   Position=0)]
 		[ValidateNotNull()]
 		[ValidateNotNullOrEmpty()]
-		[String[]]$FileID,
+		[String[]]$ID,
 		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$false,
 				   Position=1)]
@@ -95,24 +95,25 @@ function Get-B2BlobProperty
 	}
 	Process
 	{
-		foreach($file in $FileID)
+        # Loops through each item in the ID array and returns the file info.
+		foreach($file in $ID)
 		{
 			try
 			{
 				[String]$sessionBody = @{'fileId'=$file} | ConvertTo-Json
 				$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
 				$bbReturnInfo = [PSCustomObject]@{
-					'FileName' = $bbInfo.fileName
+					'Name' = $bbInfo.fileName
 					'FileInfo' = $bbInfo.fileInfo
 					'ContentType' = $bbInfo.contentType
 					'ContentLength' = $bbInfo.contentLength
 					'BucketID' = $bbInfo.bucketId
 					'AccountID' = $bbInfo.accountId
 					'ContentSHA1' = $bbInfo.contentSha1
-					'FileID' = $bbInfo.fileId
+					'ID' = $bbInfo.fileId
 				}
 				# bbReturnInfo is returned after Add-ObjectDetail is processed.
-				Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.BlobProperty'
+				Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.FileProperty'
 			}
 			catch
 			{

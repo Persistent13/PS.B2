@@ -1,17 +1,28 @@
-function Remove-B2BlobVersion
+function Hide-B2Item
 {
 <#
 .Synopsis
-	Remove-B2BlobVersion will remove the version of a given file.
-	If this is the only version the file will be deleted.
-	
-	An API key is required to use this cmdlet.
+	Hide-B2Item will mark a file name as hidden.
 .DESCRIPTION
-	Long description
+	Hide-B2Item will mark a file name as hidden.
+    
+    An API key is required to use this cmdlet.
 .EXAMPLE
-	Example of how to use this cmdlet
+	Hide-B2Item -Name 
 .EXAMPLE
 	Another example of how to use this cmdlet
+.INPUTS
+	System.String
+	
+		This cmdlet takes the BucketID and ApiToken as strings.
+	
+	System.Uri
+	
+		This cmdlet takes the ApiUri as a uri.
+.OUTPUTS
+	PS.B2.File
+	
+		The cmdlet will output a PS.B2.File object holding upload info.
 .LINK
 	https://www.backblaze.com/b2/docs/
 .ROLE
@@ -19,28 +30,27 @@ function Remove-B2BlobVersion
 .FUNCTIONALITY
 	PS.B2
 #>
-	[CmdletBinding(SupportsShouldProcess=$true,
-				   ConfirmImpact='High')]
-	[Alias('rb2bv')]
-	[OutputType('PS.B2.RemoveBlob')]
+	[CmdletBinding(SupportsShouldProcess=$true)]
+	[Alias('hb2f')]
+	[OutputType('PS.B2.File')]
 	Param
 	(
-		# The ID of the file to delete.
+		# The Uri for the B2 Api query.
 		[Parameter(Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,
 				   Position=0)]
 		[ValidateNotNull()]
 		[ValidateNotNullOrEmpty()]
-		[String[]]$FileID,
-		# The Name of the file to delete.
+		[String[]]$Name,
+		# The ID of the bucket to query.
 		[Parameter(Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,
 				   Position=1)]
 		[ValidateNotNull()]
 		[ValidateNotNullOrEmpty()]
-		[String[]]$FileName,
+		[String]$BucketID,
 		# Used to bypass confirmation prompts.
 		[Parameter(Mandatory=$false,
 				   Position=2)]
@@ -63,37 +73,34 @@ function Remove-B2BlobVersion
 	
 	Begin
 	{
-		if($FileID.Count -ne $FileName.Count)
-		{
-			throw 'A file ID must be accompanied by its file name.'
-		}
 		[Hashtable]$sessionHeaders = @{'Authorization'=$ApiToken}
-		[Array]$b2FileArray = $FileID, $FileName
-		[Uri]$b2ApiUri = "$ApiUri/b2api/v1/b2_delete_file_version"
+		[Uri]$b2ApiUri = "$ApiUri/b2api/v1/b2_hide_file"
 	}
 	Process
 	{
-		# Array [0][$i] is the file ID; [1][$i] is the file name.
-		for($i=0; $i -lt $b2FileArray[0].Count; $i++)
+		foreach($file in $Name)
 		{
-			if($Force -or $PSCmdlet.ShouldProcess($b2FileArray[0][$i], 'Remove file version.'))
+			if($Force -or $PSCmdlet.ShouldProcess($file, "Hiding file in bucket $BucketID."))
 			{
 				try
 				{
-					[String]$sessionBody = @{'fileId'=$b2FileArray[0][$i];'fileName'=$b2FileArray[1][$i]} | ConvertTo-Json
+					[String]$sessionBody = @{'bucketId'=$BucketID;'fileName'=$file} | ConvertTo-Json
 					$bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
 					$bbReturnInfo = [PSCustomObject]@{
-						'FileName' = $bbInfo.fileName
-						'FileID' = $bbInfo.fileId
+						'Name' = $bbInfo.fileName
+						'Size' = $bbInfo.size
+						'UploadTime' = $bbInfo.uploadTimestamp
+						'Action' = $bbInfo.action
+						'ID' = $bbInfo.fileId
 					}
 					# bbReturnInfo is returned after Add-ObjectDetail is processed.
-					Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.RemoveBlob'
+					Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.File'
 				}
 				catch
 				{
 					$errorDetail = $_.Exception.Message
-					Write-Error -Exception "Unable to delete the file version.`n`r$errorDetail" `
-						-Message "Unable to delete the file version.`n`r$errorDetail" -Category InvalidOperation
+					Write-Error -Exception "Unable to hide the file.`n`r$errorDetail" `
+						-Message "Unable to hide the file.`n`r$errorDetail" -Category InvalidOperation
 				}
 			}
 		}

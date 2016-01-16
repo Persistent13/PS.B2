@@ -1,4 +1,4 @@
-function Invoke-B2BlobRequest
+function Invoke-B2ItemDownload
 {
 <#
 .Synopsis
@@ -12,30 +12,30 @@ function Invoke-B2BlobRequest
 #>
 	[CmdletBinding(SupportsShouldProcess=$true,
 				   ConfirmImpact='Low')]
-	[Alias('ib2br')]
+	[Alias('ib2ir')]
 	[OutputType()]
 	Param
 	(
 		# The Uri for the B2 Api query.
-		[Parameter(ParameterSetName='FileID',
+		[Parameter(ParameterSetName='ID',
 				   Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,
 				   Position=0)]
 		[ValidateNotNull()]
 		[ValidateNotNullOrEmpty()]
-		[String]$FileID,
+		[String]$ID,
 		# The Uri for the B2 Api query.
-		[Parameter(ParameterSetName='FileName',
+		[Parameter(ParameterSetName='Name',
 				   Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,
 				   Position=0)]
 		[ValidateNotNull()]
 		[ValidateNotNullOrEmpty()]
-		[String]$FileName,
+		[String]$Name,
 		# The Uri for the B2 Api query.
-		[Parameter(ParameterSetName='FileName',
+		[Parameter(ParameterSetName='Name',
 				   Mandatory=$true,
 				   ValueFromPipeline=$true,
 				   ValueFromPipelineByPropertyName=$true,
@@ -44,24 +44,24 @@ function Invoke-B2BlobRequest
 		[ValidateNotNullOrEmpty()]
 		[String]$BucketName,
 		# The Uri for the B2 Api query.
-		[Parameter(ParameterSetName='FileName',
+		[Parameter(ParameterSetName='Name',
 				   Mandatory=$true,
 				   Position=3)]
-		[Parameter(ParameterSetName='FileID',
+		[Parameter(ParameterSetName='ID',
 				   Mandatory=$true,
 				   Position=1)]
 		[ValidateNotNull()]
 		[ValidateNotNullOrEmpty()]
 		[String]$OutFile,
 		# The Uri for the B2 Api query.
-		[Parameter(Mandatory=$false,ParameterSetName='FileName')]
-		[Parameter(Mandatory=$false,ParameterSetName='FileID')]
+		[Parameter(Mandatory=$false,ParameterSetName='Name')]
+		[Parameter(Mandatory=$false,ParameterSetName='ID')]
 		[ValidateNotNull()]
 		[ValidateNotNullOrEmpty()]
 		[Uri]$ApiDownloadUri = $script:SavedB2DownloadUri,
 		# The authorization token for the B2 account.
-		[Parameter(Mandatory=$false,ParameterSetName='FileName')]
-		[Parameter(Mandatory=$false,ParameterSetName='FileID')]
+		[Parameter(Mandatory=$false,ParameterSetName='Name')]
+		[Parameter(Mandatory=$false,ParameterSetName='ID')]
 		[ValidateNotNull()]
 		[ValidateNotNullOrEmpty()]
 		[String]$ApiToken = $script:SavedB2ApiToken
@@ -80,10 +80,10 @@ function Invoke-B2BlobRequest
 		# The process context will change based on the name of the paramter set used.
 		switch($PSCmdlet.ParameterSetName)
 		{
-			'FileName'
+			'Name'
 			{
-				[Uri]$b2ApiUri = "${ApiDownloadUri}b2api/v1/b2_download_file_by_id?fileId=$FileID"
-				if($PSCmdlet.ShouldProcess($FileID, "Download to the path $OutFile."))
+				[Uri]$b2ApiUri = "${ApiDownloadUri}b2api/v1/b2_download_file_by_id?fileId=$ID"
+				if($PSCmdlet.ShouldProcess($ID, "Download to the path $OutFile."))
 				{
 					try
 					{
@@ -97,10 +97,10 @@ function Invoke-B2BlobRequest
 					}
 				}
 			}
-			'FileID'
+			'ID'
 			{
-				[Uri]$b2ApiUri = "${ApiDownloadUri}file/$BucketName/$FileName"
-				if($PSCmdlet.ShouldProcess($FileName, "Download to the path $OutFile."))
+				[Uri]$b2ApiUri = "${ApiDownloadUri}file/$BucketName/$Name"
+				if($PSCmdlet.ShouldProcess($Name, "Download to the path $OutFile."))
 				{
 					try
 					{

@@ -1,4 +1,4 @@
-function Set-B2BlobContent
+function Invoke-B2ItemUpload
 {
 <#
 .Synopsis
@@ -24,8 +24,8 @@ function Set-B2BlobContent
 #>
 	[CmdletBinding(SupportsShouldProcess=$true,
 				   ConfirmImpact='Medium')]
-	[Alias('sb2bc')]
-	[OutputType('PS.B2.BlobProperty')]
+	[Alias('ib2iu')]
+	[OutputType('PS.B2.FileProperty')]
 	Param
 	(
 		# The ID of the bucket to update.
@@ -59,16 +59,19 @@ function Set-B2BlobContent
 	{
 		foreach($file in $Path)
 		{
-			if($Force -or $PSCmdlet.ShouldProcess($file, "Uploading to bucket $BucketID."))
+			if($Force -or $PSCmdlet.ShouldProcess($file, "Upload to bucket $BucketID."))
 			{
 				try
 				{
+                    # Required file info is retireved in this block.
 					[String]$b2FileName = (Get-Item -Path $file).Name
-					# System.Web.MimeMapping is imported on module import from Set-OutputTypes
+					# System.Web.MimeMapping is imported from the Set-OutputTypes script.
 					[String]$b2FileMime = [System.Web.MimeMapping]::GetMimeMapping($file)
 					[String]$b2FileSHA1 = (Get-FileHash -Path $file -Algorithm SHA1).Hash
 					[String]$b2FileAuthor = (Get-Acl -Path $file).Owner
+                    # Below the file author is parsed.
 					$b2FileAuthor = $b2FileAuthor.Substring($b2FileAuthor.IndexOf('\')+1)
+                    # The file information is placed into the session headers.
 					[Hashtable]$sessionHeaders = @{
 						'Authorization' = $b2Upload.Token
 						'X-Bz-File-Name' = $b2FileName
@@ -79,17 +82,17 @@ function Set-B2BlobContent
 					
 					$bbInfo = Invoke-RestMethod -Method Post -Uri $b2Upload.UploadUri -Headers $sessionHeaders -InFile $file
 					$bbReturnInfo = [PSCustomObject]@{
-						'FileName' = $bbInfo.fileName
+						'Name' = $bbInfo.fileName
 						'FileInfo' = $bbInfo.fileInfo
 						'ContentType' = $bbInfo.contentType
 						'ContentLength' = $bbInfo.contentLength
 						'BucketID' = $bbInfo.bucketId
 						'AccountID' = $bbInfo.accountId
 						'ContentSHA1' = $bbInfo.contentSha1
-						'FileID' = $bbInfo.fileId
+						'ID' = $bbInfo.fileId
 					}
 					# bbReturnInfo is returned after Add-ObjectDetail is processed.
-					Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.BlobProperty'
+					Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.FileProperty'
 				}
 				catch
 				{
