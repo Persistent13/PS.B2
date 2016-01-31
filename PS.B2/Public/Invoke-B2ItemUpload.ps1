@@ -2,105 +2,167 @@ function Invoke-B2ItemUpload
 {
 <#
 .Synopsis
-	Short description
+    The Invoke-B2ItemUpload cmdlet uploads files to a specified bucket.
 .DESCRIPTION
-	Long description
+    The Invoke-B2ItemUpload cmdlet uploads files to a specified bucket.
+    When uploading a file keep in mind:
+    
+    - It must not exceed 5 billion bytes or 4.6 GB
+    - It's name must be a UTF-8 string with a max size of 1000 bytes.
 .EXAMPLE
-	Example of how to use this cmdlet
+    Invoke-B2ItemUpload -BucketID 4a48fe8875c6214145260818 -Path '.\hello.txt'
+    
+    Name          : hello.txt
+    FileInfo      : @{author=Administrators}
+    ContentType   : text/plain
+    ContentLength : 38
+    BucketID      : 4a48fe8875c6214145260818
+    AccountID     : 30f20426f0b1
+    ContentSHA1   : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
+    ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
+    
+    The cmdlet above will upload the file hello.txt to the selected bucket ID and metadata about the
+    uploaded file will be returned if the cmdlet is successfull.
 .EXAMPLE
-	Another example of how to use this cmdlet
+    PS C:\>Invoke-B2ItemUpload -BucketID 4a48fe8875c6214145260818 -Path '.\hello.txt','.\world.txt'
+    
+    Name          : hello.txt
+    FileInfo      : @{author=Administrators}
+    ContentType   : text/plain
+    ContentLength : 38
+    BucketID      : 4a48fe8875c6214145260818
+    AccountID     : 30f20426f0b1
+    ContentSHA1   : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
+    ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
+    
+    Name          : world.txt
+    FileInfo      : @{author=Administrators}
+    ContentType   : text/plain
+    ContentLength : 38
+    BucketID      : 4a48fe8875c6214145260818
+    AccountID     : 30f20426f0b1
+    ContentSHA1   : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
+    ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
+    
+    The cmdlet above will upload the files hello.txt and world.txt to the selected bucket ID.
+.EXAMPLE
+    PS C:\>Get-ChildItem | Invoke-B2ItemUpload -BucketID 4a48fe8875c6214145260818
+    
+    Name          : hello.txt
+    FileInfo      : @{author=Administrators}
+    ContentType   : text/plain
+    ContentLength : 38
+    BucketID      : 4a48fe8875c6214145260818
+    AccountID     : 30f20426f0b1
+    ContentSHA1   : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
+    ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
+    
+    Name          : world.txt
+    FileInfo      : @{author=Administrators}
+    ContentType   : text/plain
+    ContentLength : 38
+    BucketID      : 4a48fe8875c6214145260818
+    AccountID     : 30f20426f0b1
+    ContentSHA1   : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
+    ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
+    
+    The cmdlet above will upload all files returned by the Get-ChildItem cmdlet.
 .INPUTS
-	Inputs to this cmdlet (if any)
+    Inputs to this cmdlet (if any)
 .OUTPUTS
-	Output from this cmdlet (if any)
+    Output from this cmdlet (if any)
 .NOTES
-	General notes
+    General notes
 .COMPONENT
-	The component this cmdlet belongs to
+    The component this cmdlet belongs to
 .ROLE
-	The role this cmdlet belongs to
+    The role this cmdlet belongs to
 .FUNCTIONALITY
-	The functionality that best describes this cmdlet
+    The functionality that best describes this cmdlet
 #>
-	[CmdletBinding(SupportsShouldProcess=$true,
-				   ConfirmImpact='Medium')]
-	[Alias('ib2iu')]
-	[OutputType('PS.B2.FileProperty')]
-	Param
-	(
-		# The ID of the bucket to update.
-		[Parameter(Mandatory=$true, 
-				   Position=0)]
-		[ValidateNotNull()]
-		[ValidateNotNullOrEmpty()]
-		[String]$BucketID,
-		# Param2 help description
-		[Parameter(Mandatory=$true,
-				   ValueFromPipeline=$true,
-				   ValueFromPipelineByPropertyName=$true,
-				   Position=1)]
-		[ValidateNotNull()]
-		[ValidateNotNullOrEmpty()]
-		[Alias('FullName')]
-		[String[]]$Path,
-		# Used to bypass confirmation prompts.
-		[Parameter(Mandatory=$false,
-				   Position=2)]
-		[ValidateNotNull()]
-		[ValidateNotNullOrEmpty()]
-		[Switch]$Force
-	)
-	
-	Begin
-	{
-		$b2Upload = Get-B2UploadUri -BucketID $BucketID
-	}
-	Process
-	{
-		foreach($file in $Path)
-		{
-			if($Force -or $PSCmdlet.ShouldProcess($file, "Upload to bucket $BucketID."))
-			{
-				try
-				{
-                    # Required file info is retireved in this block.
-					[String]$b2FileName = (Get-Item -Path $file).Name
-					# System.Web.MimeMapping is imported from the Set-OutputTypes script.
-					[String]$b2FileMime = [System.Web.MimeMapping]::GetMimeMapping($file)
-					[String]$b2FileSHA1 = (Get-FileHash -Path $file -Algorithm SHA1).Hash
-					[String]$b2FileAuthor = (Get-Acl -Path $file).Owner
+    [CmdletBinding(SupportsShouldProcess=$true,
+                   ConfirmImpact='Medium')]
+    [Alias('ib2iu')]
+    [OutputType('PS.B2.FileProperty')]
+    Param
+    (
+        # The ID of the bucket to update.
+        [Parameter(Mandatory=$true, 
+                   Position=0)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [String]$BucketID,
+        # The file(s) to upload.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [Alias('FullName')]
+        [String[]]$Path,
+        # Used to bypass confirmation prompts.
+        [Parameter(Mandatory=$false,
+                   Position=2)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [Switch]$Force
+    )
+    
+    Begin
+    {
+        # Pulls the unique pod upload uri for this session.
+        $b2Upload = Get-B2UploadUri -BucketID $BucketID
+    }
+    Process
+    {
+        foreach($file in $Path)
+        {
+            if($Force -or $PSCmdlet.ShouldProcess($file, "Upload to bucket $BucketID."))
+            {
+                try
+                {
+                    # Required file info is retireved in this block and escapes HTTP data.
+                    [String]$b2FileName = (Get-Item -Path $file).Name
+                    $b2FileName = [System.Uri]::EscapeDataString($b2FileName)
+                    # System.Web.MimeMapping is imported from the Set-OutputTypes script.
+                    [String]$b2FileMime = [System.Web.MimeMapping]::GetMimeMapping($file)
+                    # SHA1 is used as per B2 specification.
+                    [String]$b2FileSHA1 = (Get-FileHash -Path $file -Algorithm SHA1).Hash
+                    [String]$b2FileAuthor = (Get-Acl -Path $file).Owner
                     # Below the file author is parsed.
-					$b2FileAuthor = $b2FileAuthor.Substring($b2FileAuthor.IndexOf('\')+1)
+                    $b2FileAuthor = $b2FileAuthor.Substring($b2FileAuthor.IndexOf('\')+1)
                     # The file information is placed into the session headers.
-					[Hashtable]$sessionHeaders = @{
-						'Authorization' = $b2Upload.Token
-						'X-Bz-File-Name' = $b2FileName
-						'Content-Type' = $b2FileMime
-						'X-Bz-Content-Sha1' = $b2FileSHA1
-						'X-Bz-Info-Author' = $b2FileAuthor
-					}
-					
-					$bbInfo = Invoke-RestMethod -Method Post -Uri $b2Upload.UploadUri -Headers $sessionHeaders -InFile $file
-					$bbReturnInfo = [PSCustomObject]@{
-						'Name' = $bbInfo.fileName
-						'FileInfo' = $bbInfo.fileInfo
-						'ContentType' = $bbInfo.contentType
-						'ContentLength' = $bbInfo.contentLength
-						'BucketID' = $bbInfo.bucketId
-						'AccountID' = $bbInfo.accountId
-						'ContentSHA1' = $bbInfo.contentSha1
-						'ID' = $bbInfo.fileId
-					}
-					# bbReturnInfo is returned after Add-ObjectDetail is processed.
-					Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.FileProperty'
-				}
-				catch
-				{
-					$errorDetail = $_.Exception.Message
-					Write-Error -Exception "Unable to upload the file.`n`r$errorDetail" `
-						-Message "Unable to upload the file.`n`r$errorDetail" -Category InvalidOperation
-				}
-			}
-		}
-	}
+                    [Hashtable]$sessionHeaders = @{
+                        'Authorization' = $b2Upload.Token
+                        'X-Bz-File-Name' = $b2FileName
+                        'Content-Type' = $b2FileMime
+                        'X-Bz-Content-Sha1' = $b2FileSHA1
+                        'X-Bz-Info-Author' = $b2FileAuthor
+                    }
+                    
+                    $bbInfo = Invoke-RestMethod -Method Post -Uri $b2Upload.UploadUri -Headers $sessionHeaders -InFile $file
+                    
+                    $bbReturnInfo = [PSCustomObject]@{
+                        'Name' = $bbInfo.fileName
+                        'FileInfo' = $bbInfo.fileInfo
+                        'ContentType' = $bbInfo.contentType
+                        'ContentLength' = $bbInfo.contentLength
+                        'BucketID' = $bbInfo.bucketId
+                        'AccountID' = $bbInfo.accountId
+                        'ContentSHA1' = $bbInfo.contentSha1
+                        'ID' = $bbInfo.fileId
+                    }
+                    # bbReturnInfo is returned after Add-ObjectDetail is processed.
+                    Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.FileProperty'
+                }
+                catch
+                {
+                    $errorDetail = $_.Exception.Message
+                    Write-Error -Exception "Unable to upload the file.`n`r$errorDetail" `
+                        -Message "Unable to upload the file.`n`r$errorDetail" -Category InvalidOperation
+                }
+            }
+        }
+    }
 }

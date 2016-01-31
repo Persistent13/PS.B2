@@ -11,45 +11,45 @@ function Get-B2ItemVersion
 .EXAMPLE
 	Get-B2ItemVersion -BucketID BUCKET_ID
 	
-	Name   : files/hello.txt
+	Name       : files/hello.txt
 	Size       : 6
 	UploadTime : 1439162596000
 	Action     : upload
-	ID     : 4_z27c88f1d182b150646ff0b16_f100920ddab886245_d20150809_m232316_c100_v0009990_t0003
+	ID         : 4_z27c88f1d182b150646ff0b16_f100920ddab886245_d20150809_m232316_c100_v0009990_t0003
 	
-	Name   : files/world.txt
+	Name       : files/world.txt
 	Size       : 0
 	UploadTime : 1439162603000
 	Action     : upload
-	ID     : 4_z27c88f1d182b150646ff0b16_f100920ddab886247_d20150809_m232323_c100_v0009990_t0005
+	ID         : 4_z27c88f1d182b150646ff0b16_f100920ddab886247_d20150809_m232323_c100_v0009990_t0005
 	
-	Name   : files/world.txt
+	Name       : files/world.txt
 	Size       : 6
 	UploadTime : 1439162596000
 	Action     : upload
-	ID     : 4_z27c88f1d182b150646ff0b16_f100920ddab886246_d20150809_m232316_c100_v0009990_t0003
+	ID         : 4_z27c88f1d182b150646ff0b16_f100920ddab886246_d20150809_m232316_c100_v0009990_t0003
 	
 	The above cmdlet will return the verion information for all file versions in the given bucket.
 .EXAMPLE
 	PS C:\>Get-B2Bucket | Get-B2ItemVersion
 	
-	Name   : files/hello.txt
+	Name       : files/hello.txt
 	Size       : 6
 	UploadTime : 1439162596000
 	Action     : upload
-	ID     : 4_z27c88f1d182b150646ff0b16_f100920ddab886245_d20150809_m232316_c100_v0009990_t0003
+	ID         : 4_z27c88f1d182b150646ff0b16_f100920ddab886245_d20150809_m232316_c100_v0009990_t0003
 	
-	Name   : files/world.txt
+	Name       : files/world.txt
 	Size       : 0
 	UploadTime : 1439162603000
 	Action     : upload
-	ID     : 4_z27c88f1d182b150646ff0b16_f100920ddab886247_d20150809_m232323_c100_v0009990_t0005
+	ID         : 4_z27c88f1d182b150646ff0b16_f100920ddab886247_d20150809_m232323_c100_v0009990_t0005
 	
-	Name   : files/world.txt
+	Name       : files/world.txt
 	Size       : 6
 	UploadTime : 1439162596000
 	Action     : upload
-	ID     : 4_z27c88f1d182b150646ff0b16_f100920ddab886246_d20150809_m232316_c100_v0009990_t0003
+	ID         : 4_z27c88f1d182b150646ff0b16_f100920ddab886246_d20150809_m232316_c100_v0009990_t0003
 	
 	The above cmdlet will return the verion information for all file versions in all buckets.
 .INPUTS
