@@ -1,10 +1,10 @@
 function Get-B2Bucket
 {
 <#
-.Synopsis
-    Get-B2Bucket will ist the buckets associated with the API token.
+.SYNOPSIS
+    The Get-B2Bucket cmdlet will list buckets associated with the account.
 .DESCRIPTION
-    Get-B2Bucket will ist the buckets associated with the API token.
+    The Get-B2Bucket cmdlet will list buckets associated with the account.
     
     An API key is required to use this cmdlet.
 .EXAMPLE
@@ -16,6 +16,15 @@ function Get-B2Bucket
     Kitten Videos    5b232e8875c6214145260818 allPublic  30f20426f0b1
     
     The cmdlet above will return all buckets for the account.
+.EXAMPLE
+    Get-B2Bucket | Where-Object {$_.BucketName -eq 'awsome-jack-fang'}
+    
+    BucketName       BucketID                 BucketType AccountID
+    ----------       --------                 ---------- ---------
+    awsome-jack-fang 4a48fe8875c6214145260818 allPrivate 30f20426f0b1
+    
+    The cmdlet above will return all buckets and search for the one with
+    a name of awsome-jack-fang.
 .INPUTS
     System.String
     
@@ -33,7 +42,7 @@ function Get-B2Bucket
 .ROLE
     PS.B2
 .FUNCTIONALITY
-    PS.B2
+    To list all buckets associated with the B2 account.
 #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [Alias('gb2b')]
@@ -46,7 +55,7 @@ function Get-B2Bucket
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Uri]$ApiUri = $script:SavedB2ApiUri,
-        # The authorization token for the B2 account.
+        # The account ID for the B2 account.
         [Parameter(Mandatory=$false,
                    Position=1)]
         [ValidateNotNull()]

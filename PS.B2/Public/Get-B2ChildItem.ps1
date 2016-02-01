@@ -1,14 +1,14 @@
 function Get-B2ChildItem
 {
 <#
-.Synopsis
-    The Get-B2ChildItem cmdlet will return the item list of a bucket.
+.SYNOPSIS
+    The Get-B2ChildItem cmdlet will return the item list of a bucket and associated file properties.
 .DESCRIPTION
-    The Get-B2ChildItem cmdlet will return the item list of a bucket.
-    By default the selection is limited to the first 1000 items, to increment the selection use the
-    StartName paramter to specifiy the starting item's name.
+    The Get-B2ChildItem cmdlet will return the item list of a bucket and associated file properties.
     
-    An API key is required to use this cmdlet.
+    By default the selection has a hard limit to the first 1000 items; to increment the selection
+    use the StartName paramter to specifiy the next starting item's name and ItemCount to set the 
+    list limit from the file in StartName.
 .EXAMPLE
     Get-B2ChildItem -BucketID 4a48fe8875c6214145260818
     
@@ -57,7 +57,7 @@ function Get-B2ChildItem
 .ROLE
     PS.B2
 .FUNCTIONALITY
-    PS.B2
+    The Get-B2ChildItem cmdlet will list files contained in the selected bucket.
 #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [Alias('gb2ci')]

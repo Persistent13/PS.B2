@@ -1,13 +1,14 @@
 function Connect-B2Cloud
 {
 <#
-.Synopsis
+.SYNOPSIS
     The Connect-B2Cloud cmdlet sets the API key for the Backblaze B2 module cmdlets.
 .DESCRIPTION
-    The Connect-B2Cloud cmdlet sets the API key for the Backblaze B2 module cmdlets.
+    The Connect-B2Cloud cmdlet is used to retireve the API Uri, download Uri, and API
+    token that authorizes actions againt a B2 account. The cmdlet returns the results
+    of the REST query as text if successful and an error if not successful.
+    
     The application key and account ID can be obtained from your Backblaze B2 account page.
-
-    An API key is required to use this cmdlet.
 .EXAMPLE
     Connect-B2Cloud
    
@@ -15,9 +16,10 @@ function Connect-B2Cloud
     ---------       ------                       -----------                -----
     30f20426f0b1    https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
 
-    The above command will prompt for the account ID and application key and save it for use in other PS.B2 modules.
-    The API uri, download uri, and authorization token will be returned if the cmdlet was successful.
-
+    The above cmdlet will prompt for the account ID and application key, authenticate, and
+    save the token, API Uri, and download Uri returned for use in the other PS.B2 modules.
+    
+    The API Uri, download Uri, and authorization token will be returned if the cmdlet was successful.
 .EXAMPLE
     PS C:\>Connect-B2Cloud -AccountID 30f20426f0b1 -ApplicationKey YOUR_APPLICATION_KEY
    
@@ -25,9 +27,10 @@ function Connect-B2Cloud
     ---------       ------                       -----------                -----
     30f20426f0b1    https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
 
-    The above command will take the account ID and application key given and save it for use in other PS.B2 modules.
-    The API uri, download uri, and authorization token will be returned if the cmdlet was successful.
-
+    The above cmdlet will take the given account ID and application key authenticate and
+    save the token, API Uri, and download Uri returned for use in the other PS.B2 modules.
+    
+    The API Uri, download Uri, and authorization token will be returned if the cmdlet was successful.
 .INPUTS
     System.String
 
@@ -36,12 +39,15 @@ function Connect-B2Cloud
     PS.B2.Account
 
         The cmdlet will output a PS.B2.Account object holding account authorization info.
+.NOTES
+    Connect-B2Cloud will always output the account information on a successful connection, to
+    prevent this it is recommened to pipe the out put to Out-Null. i.e. Connect-B2Cloud | Out-Null
 .LINK
     https://www.backblaze.com/b2/docs/
 .ROLE
     PS.B2
 .FUNCTIONALITY
-    PS.B2
+    To retireve an API token for authenticating other PS.B2 cmdlets.
 #>
     [CmdletBinding(SupportsShouldProcess=$false,
                    PositionalBinding=$true)]
