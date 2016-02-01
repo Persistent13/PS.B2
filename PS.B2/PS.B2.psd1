@@ -92,7 +92,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('API','Blaze','Back','Backblaze','B2','Cloud','Storage','backup')
+        Tags = @('API','Blaze','Back','Backblaze','B2','Cloud','Storage','backup','object')
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/Persistent13/PS.B2/blob/master/LICENSE.md'
