@@ -1,24 +1,26 @@
 function Invoke-B2ItemUpload
 {
 <#
-.Synopsis
+.SYNOPSIS
     The Invoke-B2ItemUpload cmdlet uploads files to a specified bucket.
 .DESCRIPTION
     The Invoke-B2ItemUpload cmdlet uploads files to a specified bucket.
-    When uploading a file keep in mind:
+    When uploading a file keep in mind that:
     
     - It must not exceed 5 billion bytes or 4.6 GB
     - It's name must be a UTF-8 string with a max size of 1000 bytes.
+    
+    An API key is required to use this cmdlet.
 .EXAMPLE
     Invoke-B2ItemUpload -BucketID 4a48fe8875c6214145260818 -Path '.\hello.txt'
     
     Name          : hello.txt
     FileInfo      : @{author=Administrators}
-    ContentType   : text/plain
-    ContentLength : 38
+    Type          : text/plain
+    Length        : 38
     BucketID      : 4a48fe8875c6214145260818
     AccountID     : 30f20426f0b1
-    ContentSHA1   : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
+    SHA1          : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
     ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
     
     The cmdlet above will upload the file hello.txt to the selected bucket ID and metadata about the
@@ -28,20 +30,20 @@ function Invoke-B2ItemUpload
     
     Name          : hello.txt
     FileInfo      : @{author=Administrators}
-    ContentType   : text/plain
-    ContentLength : 38
+    Type          : text/plain
+    Length        : 38
     BucketID      : 4a48fe8875c6214145260818
     AccountID     : 30f20426f0b1
-    ContentSHA1   : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
+    SHA1          : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
     ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
     
     Name          : world.txt
     FileInfo      : @{author=Administrators}
-    ContentType   : text/plain
-    ContentLength : 38
+    Type          : text/plain
+    Length        : 38
     BucketID      : 4a48fe8875c6214145260818
     AccountID     : 30f20426f0b1
-    ContentSHA1   : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
+    SHA1          : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
     ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
     
     The cmdlet above will upload the files hello.txt and world.txt to the selected bucket ID.
@@ -50,35 +52,37 @@ function Invoke-B2ItemUpload
     
     Name          : hello.txt
     FileInfo      : @{author=Administrators}
-    ContentType   : text/plain
-    ContentLength : 38
+    Type          : text/plain
+    Length        : 38
     BucketID      : 4a48fe8875c6214145260818
     AccountID     : 30f20426f0b1
-    ContentSHA1   : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
+    SHA1          : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
     ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
     
     Name          : world.txt
     FileInfo      : @{author=Administrators}
-    ContentType   : text/plain
-    ContentLength : 38
+    Type          : text/plain
+    Length        : 38
     BucketID      : 4a48fe8875c6214145260818
     AccountID     : 30f20426f0b1
-    ContentSHA1   : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
+    SHA1          : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
     ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
     
     The cmdlet above will upload all files returned by the Get-ChildItem cmdlet.
 .INPUTS
-    Inputs to this cmdlet (if any)
+    System.String
+    
+        This cmdlet takes the AccountID and ApplicationKey as strings.
 .OUTPUTS
-    Output from this cmdlet (if any)
-.NOTES
-    General notes
-.COMPONENT
-    The component this cmdlet belongs to
+    PS.B2.FileProperty
+    
+        This cmdlet will output a PS.B2.FileProperty object holding the file properties.
+.LINK
+    https://www.backblaze.com/b2/docs/
 .ROLE
-    The role this cmdlet belongs to
+    PS.B2
 .FUNCTIONALITY
-    The functionality that best describes this cmdlet
+    The Invoke-B2ItemUpload cmdlet uploads files to a specified bucket.
 #>
     [CmdletBinding(SupportsShouldProcess=$true,
                    ConfirmImpact='Medium')]
@@ -146,11 +150,11 @@ function Invoke-B2ItemUpload
                     $bbReturnInfo = [PSCustomObject]@{
                         'Name' = $bbInfo.fileName
                         'FileInfo' = $bbInfo.fileInfo
-                        'ContentType' = $bbInfo.contentType
-                        'ContentLength' = $bbInfo.contentLength
+                        'Type' = $bbInfo.contentType
+                        'Length' = $bbInfo.contentLength
                         'BucketID' = $bbInfo.bucketId
                         'AccountID' = $bbInfo.accountId
-                        'ContentSHA1' = $bbInfo.contentSha1
+                        'SHA1' = $bbInfo.contentSha1
                         'ID' = $bbInfo.fileId
                     }
                     # bbReturnInfo is returned after Add-ObjectDetail is processed.
