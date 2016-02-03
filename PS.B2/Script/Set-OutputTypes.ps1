@@ -1,6 +1,6 @@
 if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
 {
-    #Used to import the mime type finder in Set-B2FileContent
+    #Used to import the mime type finder in Invoke-B2ItemUpload
     Add-Type -AssemblyName System.Web
 
     #Adds account OutputType
@@ -49,9 +49,9 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     
     Update-TypeData @fileProperty -MemberName AccountID
     Update-TypeData @fileProperty -MemberName BucketID
-    Update-TypeData @fileProperty -MemberName ContentLength
-    Update-TypeData @fileProperty -MemberName ContentSHA1
-    Update-TypeData @fileProperty -MemberName ContentType
+    Update-TypeData @fileProperty -MemberName Length
+    Update-TypeData @fileProperty -MemberName SHA1
+    Update-TypeData @fileProperty -MemberName Type
     Update-TypeData @fileProperty -MemberName ID
     Update-TypeData @fileProperty -MemberName FileInfo
     Update-TypeData @fileProperty -MemberName Name

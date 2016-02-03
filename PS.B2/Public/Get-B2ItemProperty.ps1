@@ -1,10 +1,21 @@
 function Get-B2ItemProperty
 {
 <#
-.Synopsis
-    The Get-B2ItemProperty cmdlet will pull file information.
+.SYNOPSIS
+    The Get-B2ItemProperty cmdlet will pull extra file information.
 .DESCRIPTION
-    The Get-B2ItemProperty cmdlet will pull file information on the specified file ID.
+    The Get-B2ItemProperty cmdlet will pull extra file information for the specified file ID.
+    
+    The file information to be returned:
+    
+    - Name
+    - FileInfo
+    - Type
+    - Length
+    - BucketID
+    - AccountID
+    - SHA1
+    - ID
     
     An API key is required to use this cmdlet.
 .EXAMPLE
@@ -41,7 +52,7 @@ function Get-B2ItemProperty
     ContentSHA1   : 3100d797d8c0282aeb0afac63f0795117892d2fd
     ID            : 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0002
     
-    The cmdlets above get the file properties for all files in all buckets.
+    The cmdlets above get the file properties for the first 1000 files in all buckets.
 .INPUTS
     System.String
     
@@ -59,7 +70,7 @@ function Get-B2ItemProperty
 .ROLE
     PS.B2
 .FUNCTIONALITY
-    PS.B2
+    The Get-B2ItemProperty cmdlet will pull extra file information.
 #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [Alias('gb2ip')]
@@ -105,11 +116,11 @@ function Get-B2ItemProperty
                 $bbReturnInfo = [PSCustomObject]@{
                     'Name' = $bbInfo.fileName
                     'FileInfo' = $bbInfo.fileInfo
-                    'ContentType' = $bbInfo.contentType
-                    'ContentLength' = $bbInfo.contentLength
+                    'Type' = $bbInfo.contentType
+                    'Length' = $bbInfo.contentLength
                     'BucketID' = $bbInfo.bucketId
                     'AccountID' = $bbInfo.accountId
-                    'ContentSHA1' = $bbInfo.contentSha1
+                    'SHA1' = $bbInfo.contentSha1
                     'ID' = $bbInfo.fileId
                 }
                 # bbReturnInfo is returned after Add-ObjectDetail is processed.
