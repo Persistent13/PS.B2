@@ -1,7 +1,7 @@
 function Get-B2ItemVersion
 {
 <#
-.Synopsis
+.SYNOPSIS
     The Get-B2ItemVersion cmdlet retirives file version info.
 .DESCRIPTION
     The Get-B2ItemVersion cmdlet retirives file version info.
@@ -9,7 +9,7 @@ function Get-B2ItemVersion
     
     An API key is required to use this cmdlet.
 .EXAMPLE
-    Get-B2ItemVersion -BucketID BUCKET_ID
+    Get-B2ItemVersion -BucketID 5b232e8875c6214145260818
     
     Name       : files/hello.txt
     Size       : 6
@@ -67,7 +67,7 @@ function Get-B2ItemVersion
 .ROLE
     PS.B2
 .FUNCTIONALITY
-    PS.B2
+    The Get-B2ItemVersion cmdlet retirives file version info.
 #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [Alias('gb2bv')]
