@@ -1,11 +1,8 @@
-#needed for Unzip module
-Add-Type -AssemblyName System.IO.Compression.FileSystem
+#This installs the PS.B2 module for the current user
+#https://github.com/Persistent13/PS.B2 for more info
 
-function Unzip
-{
-    param([string]$Path, [string]$Destination)
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($Path, $Destination)
-}
+#needed to unzip the repo
+Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 #needed to find my documents folder path and current directory
 $UserDocs = [System.Environment]::getfolderpath('mydocuments')
@@ -17,10 +14,13 @@ $webClient.DownloadFile('https://github.com/Persistent13/PS.B2/archive/master.zi
 #checks if module path exists yet and creats it if not
 if(-not $(Test-Path -Path "${UserDocs}\WindowsPowerShell\Modules\PS.B2" -ErrorAction Continue))
 {
-    mkdir "${UserDocs}\WindowsPowerShell\Modules\PS.B2"
+    mkdir "${UserDocs}\WindowsPowerShell\Modules\PS.B2" | Out-Null
 }
-
+else
+{
+    Remove-Item -Path "${UserDocs}\WindowsPowerShell\Modules\PS.B2" -Recurse -Force
+}
 #unzips the module, places it, and cleans up
-Unzip -Path .\PS.B2.zip -Destination "${UserDocs}\WindowsPowerShell\Modules\PS.B2"
+[System.IO.Compression.ZipFile]::ExtractToDirectory('.\PS.B2.zip', "${UserDocs}\WindowsPowerShell\Modules\PS.B2")
 Move-Item -Path "${UserDocs}\WindowsPowerShell\Modules\PS.B2\PS.B2-master\PS.B2\*" -Destination "${UserDocs}\WindowsPowerShell\Modules\PS.B2"
-rm "${UserDocs}\WindowsPowerShell\Modules\PS.B2\PS.B2-master" -Recurse -Force
+Remove-Item -Path "${UserDocs}\WindowsPowerShell\Modules\PS.B2\PS.B2-master" -Recurse -Force

@@ -1,37 +1,66 @@
-# PS.B2 #
+## PS.B2 ##
 
 PS.B2 is a PowerShell module used to interact with the [Backblaze B2](https://www.backblaze.com/b2/why-b2.html "Backblaze B2") API.
 
-# Features #
+### Features ###
 
 PS.B2 supports all the features provided via the Backblaze B2 API such as:
 
-- Creating, listing and deleting buckets
-- Downloading, uploading, hiding files and file information
+- Create, list and delete buckets
+- Download and upload files
+- Hide and delete files and file information
 
-# Installation #
+## Getting Started ##
 
-**PoweShell v5**:
+### Prerequisites ###
 
-    Install-Module -Name PS.B2
-    Import-Module -Name PS.B2
+- PowerShell v3
+- B2 Account ID
+- B2 Application Key
 
-or
+### Basic Installation ###
 
-    Install-Module -Name PS.B2 -Scope CurrentUser
-    Import-Module -Name PS.B2
+PS.B2 is installed by running one of the following commands in your PowerShell terminal.
+
+#### PoweShell v5+ ####
+
+```powershell
+Install-Module -Name PS.B2
+Import-Module -Name PS.B2
+```
 
 If you lack administrative rights to the computer.
 
-**PowerShell v4 or older:**
+```powershell
+Install-Module -Name PS.B2 -Scope CurrentUser
+Import-Module -Name PS.B2
+```
+#### PowerShell v4 or older ####
 
-iex (New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Persistent13/PS.B2/master/Media/install.ps1')
+```powershell
+iex (New-Object System.Net.WebClient).DownloadString('https://git.io/v2aGs')
+Import-Module -Name PS.B2
+```
 
-# Minimum Requirements #
+## Using PS.B2 ##
 
-- PowerShell 3
+### Connect to B2 ###
 
-# License #
+PS.B2 will require an account ID and application key set to use.
+
+Once created you can connect to B2 like so...
+
+```powershell
+Connect-B2Cloud -AccountID "ACCOUNT_ID" -ApplicationKey "APPLICATION_KEY"
+```
+
+You can find all exported PS.B2 cmdlets like so...
+
+```powershell
+(Get-Module PS.B2).ExportedCommands.Keys
+```
+
+## License ##
 
 The MIT License (MIT)
 
