@@ -1,10 +1,13 @@
 function Get-B2UploadUri
 {
 <#
-.Synopsis
-    Get-B2UploadUri will get the upload uri for a given bucket. 
+.SYNOPSIS
+    Get-B2UploadUri will get the upload Uri for a given bucket. 
 .DESCRIPTION
-    Get-B2UploadUri will get the upload uri for a given bucket.
+    Get-B2UploadUri will get the upload Uri for a given bucket.
+    
+    An upload Uri and upload authorization token are valid for
+    24 hours or until the endpoint rejects an upload.
     
     An API key is required to use this cmdlet.
 .EXAMPLE

@@ -82,7 +82,7 @@ function Invoke-B2ItemUpload
 .ROLE
     PS.B2
 .FUNCTIONALITY
-    The Invoke-B2ItemUpload cmdlet uploads files to a specified bucket.
+    PS.B2
 #>
     [CmdletBinding(SupportsShouldProcess=$true,
                    ConfirmImpact='Medium')]

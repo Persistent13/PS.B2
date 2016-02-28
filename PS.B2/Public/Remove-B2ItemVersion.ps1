@@ -1,17 +1,35 @@
 function Remove-B2ItemVersion
 {
 <#
-.Synopsis
+.SYNOPSIS
+    Remove-B2ItemVersion will remove the version of a given file.
+    If the file only has one version the file will be deleted.
+.DESCRIPTION
     Remove-B2ItemVersion will remove the version of a given file.
     If the file only has one version the file will be deleted.
     
+    If the version you delete is the latest version, and there are older versions, then the most recent older version will become the
+    current version, and be the one that you'll get when downloading by name.
+    
     An API key is required to use this cmdlet.
-.DESCRIPTION
-    Long description
 .EXAMPLE
-    Example of how to use this cmdlet
+    Remove-B2ItemVersion -Name items/hello.txt -ID 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0104
+    
+    Name            ID
+    ----            --
+    typing_test.txt 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0109
+    
+    The cmdlet above will 
 .EXAMPLE
-    Another example of how to use this cmdlet
+    PS C:\>Get-B2Bucket | Get-B2ChildItem | Remove-B2ItemVersion -Force
+    
+    Name            ID
+    ----            --
+    items/hello.txt 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0104
+    items/world.txt 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0105
+    
+    The cmdlet above will remove the latest version of the first 1000 files in all buckets without prompting.
+    If the file has only one version the file will be deleted.
 .LINK
     https://www.backblaze.com/b2/docs/
 .ROLE
@@ -98,7 +116,7 @@ function Remove-B2ItemVersion
     End
     {
         # The End block will start the removal of the given files by looping through a multidimensional
-        # array that conatins the file ID in the first array and thefile name in the second.
+        # array that conatins the file ID in array 0 and the file name in array 1.
         for($i = 0; $i -lt $b2FileArray[0].Count; $i++)
         {
             if($Force -or $PSCmdlet.ShouldProcess($b2FileArray[1][$i],"Remove file version $($b2FileArray[0][$i])."))

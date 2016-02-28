@@ -1,14 +1,49 @@
 function Remove-B2Bucket
 {
 <#
-.Synopsis
-    Short description
+.SYNOPSIS
+    Remove-B2Bucket will remove the selected bucket.
+    The cmdlet will only remove a bucket if the bucket is empty.
 .DESCRIPTION
-    Long description
+    Remove-B2Bucket will remove the selected bucket.
+    The cmdlet will only remove a bucket if the bucket is empty.
+    
+    An API key is required to use this cmdlet.
 .EXAMPLE
-    Example of how to use this cmdlet
+    Remove-B2Bucket -BucketID ee7d351ff1262048503e091f
+    
+    BucketName            BucketID                 BucketType AccountID
+    ----------            --------                 ---------- ---------
+    stoic-barbarian-lemur 4a48fe8875c6214145260818 allPublic  010203040506
+    
+    The cmdlet above will remove the bucket with the ID of ee7d351ff1262048503e091f.
 .EXAMPLE
-    Another example of how to use this cmdlet
+    PS C:\>Get-B2Bucket | Remove-B2Bucket -Force
+    
+    BucketName            BucketID                 BucketType AccountID
+    ----------            --------                 ---------- ---------
+    stoic-barbarian-lemur 4a48fe8875c6214145260818 allPrivate 010203040506
+    frisky-navigator-lion 4a48fe8875c6214145260819 allPrivate 010203040506
+    
+    The cmdlet above will remove all buckets associated with the account without prompting for confirmation.
+.INPUTS
+    System.String
+    
+        This cmdlet takes the AccountID and ApplicationKey as strings.
+    
+    System.Uri
+    
+        This cmdlet takes the ApiUri as a uri.
+.OUTPUTS
+    PS.B2.Bucket
+    
+        The cmdlet will output a PS.B2.Bucket object holding the bucket info.
+.LINK
+    https://www.backblaze.com/b2/docs/
+.ROLE
+    PS.B2
+.FUNCTIONALITY
+    PS.B2
 #>
     [CmdletBinding(SupportsShouldProcess=$true,
                    ConfirmImpact='High')]

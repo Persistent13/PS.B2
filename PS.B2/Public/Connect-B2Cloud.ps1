@@ -47,7 +47,7 @@ function Connect-B2Cloud
 .ROLE
     PS.B2
 .FUNCTIONALITY
-    To retireve an API token for authenticating other PS.B2 cmdlets.
+    PS.B2
 #>
     [CmdletBinding(SupportsShouldProcess=$false,
                    PositionalBinding=$true)]

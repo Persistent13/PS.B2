@@ -42,7 +42,7 @@ function Get-B2Bucket
 .ROLE
     PS.B2
 .FUNCTIONALITY
-    To list all buckets associated with the B2 account.
+    PS.B2
 #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [Alias('gb2b')]

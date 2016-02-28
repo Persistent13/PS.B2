@@ -1,7 +1,7 @@
 function Invoke-B2ItemDownload
 {
 <#
-.Synopsis
+.SYNOPSIS
     The Invoke-B2ItemDownload cmdlet downloads files by either the file ID or file name.
 .DESCRIPTION
     The Invoke-B2ItemDownload cmdlet downloads files by either the file ID or file name.
@@ -16,6 +16,10 @@ function Invoke-B2ItemDownload
     PS C:\>Invoke-B2ItemDownload -FileName hello.txt -BucketName text -OutFile C:\hello.txt
     
     The cmdlet above will download the file with the given name from the given bucket name and place it at the root of the C: drive with the name hello.txt.
+.EXAMPLE
+    PS C:\>Get-B2Bucket | Get-B2ChildItem | ForEach-Object {Invoke-B2ItemDownload -FileID $_.ID -OutFile .\$_.Name}
+    
+    The cmdlet above will download the first 1000 files in all buckets and place them in the current directory.
 .INPUTS
     System.String
     

@@ -67,7 +67,7 @@ function Get-B2ItemVersion
 .ROLE
     PS.B2
 .FUNCTIONALITY
-    The Get-B2ItemVersion cmdlet retirives file version info.
+    PS.B2
 #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [Alias('gb2bv')]

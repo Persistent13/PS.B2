@@ -2,9 +2,9 @@ function Get-B2ChildItem
 {
 <#
 .SYNOPSIS
-    The Get-B2ChildItem cmdlet will return the item list of a bucket and associated file properties.
+    The Get-B2ChildItem cmdlet will return a list of items in a bucket and associated file properties.
 .DESCRIPTION
-    The Get-B2ChildItem cmdlet will return the item list of a bucket and associated file properties.
+    The Get-B2ChildItem cmdlet will return a list of items in a bucket and associated file properties.
     
     The file information to be returned:
     
@@ -34,7 +34,7 @@ function Get-B2ChildItem
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f1004ba650fe24e6c_d20150809_m012854_c100_v0009990_t0000
     
-    The cmdlet above will list all items in the given bucket upto the first 1000.
+    The cmdlet above will list the first 1000 items in a given bucket.
 .EXAMPLE
     PS C:\>Get-B2ChildItem -BucketID 4a48fe8875c6214145260818 -StartName items/world.txt -ItemCount 3
     
@@ -67,7 +67,7 @@ function Get-B2ChildItem
 .ROLE
     PS.B2
 .FUNCTIONALITY
-    The Get-B2ChildItem cmdlet will list files contained in the selected bucket.
+    PS.B2
 #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [Alias('gb2ci')]

@@ -70,7 +70,7 @@ function Get-B2ItemProperty
 .ROLE
     PS.B2
 .FUNCTIONALITY
-    The Get-B2ItemProperty cmdlet will pull extra file information.
+    PS.B2
 #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [Alias('gb2ip')]

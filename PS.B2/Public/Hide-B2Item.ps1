@@ -1,20 +1,46 @@
 function Hide-B2Item
 {
 <#
-.Synopsis
+.SYNOPSIS
     Hide-B2Item will mark a file name as hidden.
 .DESCRIPTION
     Hide-B2Item will mark a file name as hidden.
     
+    Hides a file so that downloading by name will not find the file,
+    but previous versions of the file are still stored.
+    
     An API key is required to use this cmdlet.
 .EXAMPLE
-    Hide-B2Item -Name 
+    Hide-B2Item -Name items/hello.txt -BucketID 4a48fe8875c6214145260818
+    
+    Name       : items/hello.txt
+    Size       : 0
+    UploadTime : 1437815673000
+    Action     : hide
+    ID         : 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0104
+    
+    The cmdlet above will hide the latest version of the selected file in
+    the selected bucket.
 .EXAMPLE
-    Another example of how to use this cmdlet
+    PS C:\>Get-B2Bucket | Get-B2ChildItem | Hide-B2Item
+    
+    Name       : items/hello.txt
+    Size       : 0
+    UploadTime : 1437815673000
+    Action     : hide
+    ID         : 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0104
+    
+    Name       : items/world.txt
+    Size       : 0
+    UploadTime : 1437815683000
+    Action     : hide
+    ID         : 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0105
+    
+    The cmdlet above will hide the latest version of the first 1000 files in all buckets.
 .INPUTS
     System.String
     
-        This cmdlet takes the BucketID and ApiToken as strings.
+        This cmdlet takes the Name, BucketID and ApiToken as strings.
     
     System.Uri
     
@@ -35,7 +61,7 @@ function Hide-B2Item
     [OutputType('PS.B2.File')]
     Param
     (
-        # The Uri for the B2 Api query.
+        # The name of the item to hide.
         [Parameter(Mandatory=$true,
                    ValueFromPipeline=$true,
                    ValueFromPipelineByPropertyName=$true,
