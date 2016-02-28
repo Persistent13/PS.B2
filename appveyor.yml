@@ -7,6 +7,12 @@ install:
 #Not used; nothing to build.
 build: false
 
+environment:
+  account_id:
+    secure: nUzWVA9u2T5ItUyRgJ9SJg==
+  application_key:
+    secure: /C1ARx5H2LR8kF/ETaSMbB0urIGsck6AY3UYKvCZfu4mdywJXMSbluQfza0gpSqn
+
 test_script:
 #Tests with native PS version
   - ps: . .\Tests\appveyor.pester.ps1 -Test

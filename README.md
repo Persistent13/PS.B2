@@ -1,14 +1,6 @@
-# Status #
-
-This module is currently in **pre-release** and does not yet offer all API functions.
-
-Once the module has moved to a full release this warning will be removed.
-
----
-
 # PS.B2 #
 
-PS.B2 is a PowerShell module used to interact with the Backblaze B2 API.
+PS.B2 is a PowerShell module used to interact with the [Backblaze B2](https://www.backblaze.com/b2/why-b2.html "Backblaze B2") API.
 
 # Features #
 
@@ -16,6 +8,24 @@ PS.B2 supports all the features provided via the Backblaze B2 API such as:
 
 - Creating, listing and deleting buckets
 - Downloading, uploading, hiding files and file information
+
+# Installation #
+
+**PoweShell v5**:
+
+    Install-Module -Name PS.B2
+    Import-Module -Name PS.B2
+
+or
+
+    Install-Module -Name PS.B2 -Scope CurrentUser
+    Import-Module -Name PS.B2
+
+If you lack administrative rights to the computer.
+
+**PowerShell v4 or older:**
+
+iex (New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Persistent13/PS.B2/master/Media/install.ps1')
 
 # Minimum Requirements #
 

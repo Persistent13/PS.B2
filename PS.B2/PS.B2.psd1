@@ -24,7 +24,7 @@ Author = 'Dakota Clark'
 # CompanyName = 'Unknown'
 
 # Copyright statement for this module
-Copyright = '(c) 2015 Dakota. All rights reserved.'
+Copyright = '(c) 2015 Dakota Clark. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'A PowerShell module used to interact with the Backblaze B2 API.'
