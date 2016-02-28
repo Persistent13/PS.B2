@@ -64,7 +64,7 @@ You can find all exported PS.B2 cmdlets like so...
 
 The MIT License (MIT)
 
-Copyright (c) 2015 Dakota Clark
+Copyright (c) 2016 Dakota Clark
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

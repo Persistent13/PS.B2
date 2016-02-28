@@ -12,7 +12,7 @@
 RootModule = 'PS.B2.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.1'
+ModuleVersion = '1.0.0'
 
 # ID used to uniquely identify this module
 GUID = 'dc2d4756-d7ae-48e9-ae28-d9bc35dd8136'
@@ -24,7 +24,7 @@ Author = 'Dakota Clark'
 # CompanyName = 'Unknown'
 
 # Copyright statement for this module
-Copyright = '(c) 2015 Dakota Clark. All rights reserved.'
+Copyright = '(c) 2016 Dakota Clark. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'A PowerShell module used to interact with the Backblaze B2 API.'
