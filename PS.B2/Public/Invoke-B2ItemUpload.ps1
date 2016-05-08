@@ -85,29 +85,27 @@ function Invoke-B2ItemUpload
     PS.B2
 #>
     [CmdletBinding(SupportsShouldProcess=$true,
+                   PositionalBinding=$true,
                    ConfirmImpact='Medium')]
     [Alias('ib2iu')]
     [OutputType('PS.B2.FileProperty')]
     Param
     (
-        # The ID of the bucket to update.
-        [Parameter(Mandatory=$true, 
-                   Position=0)]
+        # The ID of the bucket to upload to.
+        [Parameter(Mandatory=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$BucketID,
         # The file(s) to upload.
         [Parameter(Mandatory=$true,
                    ValueFromPipeline=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=1)]
+                   ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Alias('FullName')]
         [String[]]$Path,
         # Used to bypass confirmation prompts.
-        [Parameter(Mandatory=$false,
-                   Position=2)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Switch]$Force
@@ -129,8 +127,6 @@ function Invoke-B2ItemUpload
                     # Required file info is retireved in this block and escapes HTTP data.
                     [String]$b2FileName = (Get-Item -Path $file).Name
                     $b2FileName = [System.Uri]::EscapeDataString($b2FileName)
-                    # System.Web.MimeMapping is imported from the Set-OutputTypes script.
-                    [String]$b2FileMime = [System.Web.MimeMapping]::GetMimeMapping($file)
                     # SHA1 is used as per B2 specification.
                     [String]$b2FileSHA1 = (Get-FileHash -Path $file -Algorithm SHA1).Hash
                     [String]$b2FileAuthor = (Get-Acl -Path $file).Owner
@@ -140,7 +136,7 @@ function Invoke-B2ItemUpload
                     [Hashtable]$sessionHeaders = @{
                         'Authorization' = $b2Upload.Token
                         'X-Bz-File-Name' = $b2FileName
-                        'Content-Type' = $b2FileMime
+                        'Content-Type' = 'b2/x-auto'
                         'X-Bz-Content-Sha1' = $b2FileSHA1
                         'X-Bz-Info-Author' = $b2FileAuthor
                     }

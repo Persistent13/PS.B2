@@ -15,7 +15,7 @@ function Hide-B2Item
     
     Name       : items/hello.txt
     Size       : 0
-    UploadTime : 1437815673000
+    UploadTime : Saturday, July 25, 2015 9:14:43 AM
     Action     : hide
     ID         : 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0104
     
@@ -26,13 +26,13 @@ function Hide-B2Item
     
     Name       : items/hello.txt
     Size       : 0
-    UploadTime : 1437815673000
+    UploadTime : Saturday, July 25, 2015 9:14:43 AM
     Action     : hide
     ID         : 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0104
     
     Name       : items/world.txt
     Size       : 0
-    UploadTime : 1437815683000
+    UploadTime : Saturday, July 25, 2015 9:14:43 AM
     Action     : hide
     ID         : 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0105
     
@@ -56,7 +56,8 @@ function Hide-B2Item
 .FUNCTIONALITY
     PS.B2
 #>
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$true,
+                   PositionalBinding=$true)]
     [Alias('hb2f')]
     [OutputType('PS.B2.File')]
     Param
@@ -64,34 +65,29 @@ function Hide-B2Item
         # The name of the item to hide.
         [Parameter(Mandatory=$true,
                    ValueFromPipeline=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
+                   ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String[]]$Name,
         # The ID of the bucket to query.
         [Parameter(Mandatory=$true,
                    ValueFromPipeline=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=1)]
+                   ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$BucketID,
         # Used to bypass confirmation prompts.
-        [Parameter(Mandatory=$false,
-                   Position=2)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Switch]$Force,
         # The Uri for the B2 Api query.
-        [Parameter(Mandatory=$false,
-                   Position=3)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Uri]$ApiUri = $script:SavedB2ApiUri,
         # The authorization token for the B2 account.
-        [Parameter(Mandatory=$false,
-                   Position=4)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken
@@ -115,7 +111,8 @@ function Hide-B2Item
                     $bbReturnInfo = [PSCustomObject]@{
                         'Name' = $bbInfo.fileName
                         'Size' = $bbInfo.size
-                        'UploadTime' = $bbInfo.uploadTimestamp
+                        #Below coverts from Unix time to .NET time
+                        'UploadTime' = ([DateTime]'1/1/1970').AddMilliseconds($bbInfo.uploadTimestamp)
                         'Action' = $bbInfo.action
                         'ID' = $bbInfo.fileId
                     }

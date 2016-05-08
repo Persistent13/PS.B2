@@ -44,46 +44,41 @@ function New-B2Bucket
     PS.B2
 #>
     [CmdletBinding(SupportsShouldProcess=$true,
+                   PositionalBinding=$true,
                    ConfirmImpact='Low')]
     [Alias('nb2b')]
     [OutputType('PS.B2.Bucket')]
     Param
     (
         # The name of the new B2 bucket.
-        [Parameter(Mandatory=$true,
-                   Position=0)]
+        [Parameter(Mandatory=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [ValidateLength(1,50)]
         [String[]]$BucketName,
         # What type of bucket, public or private, to create.
-        [Parameter(Mandatory=$true,
-                   Position=1)]
+        [Parameter(Mandatory=$true)]
         [ValidateSet('allPublic','allPrivate')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$BucketType,
         # Used to bypass confirmation prompts.
-        [Parameter(Mandatory=$false,
-                   Position=2)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Switch]$Force,
         # The Uri for the B2 Api query.
-        [Parameter(Mandatory=$false,
-                   Position=3)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Uri]$ApiUri = $script:SavedB2ApiUri,
         # The authorization token for the B2 account.
-        [Parameter(Mandatory=$false,
-                   Position=4)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$AccountID = $script:SavedB2AccountID,
         # The authorization token for the B2 account.
-        [Parameter(Mandatory=$false,
-                   Position=5)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken

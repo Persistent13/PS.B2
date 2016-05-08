@@ -38,6 +38,7 @@ function Remove-B2ItemVersion
     PS.B2
 #>
     [CmdletBinding(SupportsShouldProcess=$true,
+                   PositionalBinding=$true,
                    ConfirmImpact='High')]
     [Alias('rb2iv')]
     [OutputType('PS.B2.RemoveFile')]
@@ -46,34 +47,29 @@ function Remove-B2ItemVersion
         # The Name of the file to delete.
         [Parameter(Mandatory=$true,
                    ValueFromPipeline=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
+                   ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String[]]$Name,
         # The ID of the file to delete.
         [Parameter(Mandatory=$true,
                    ValueFromPipeline=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=1)]
+                   ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String[]]$ID,
         # Used to bypass confirmation prompts.
-        [Parameter(Mandatory=$false,
-                   Position=2)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Switch]$Force,
         # The Uri for the B2 Api query.
-        [Parameter(Mandatory=$false,
-                   Position=3)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Uri]$ApiUri = $script:SavedB2ApiUri,
         # The authorization token for the B2 account.
-        [Parameter(Mandatory=$false,
-                   Position=4)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken

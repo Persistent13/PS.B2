@@ -44,26 +44,24 @@ function Get-B2Bucket
 .FUNCTIONALITY
     PS.B2
 #>
-    [CmdletBinding(SupportsShouldProcess=$false)]
+    [CmdletBinding(SupportsShouldProcess=$false,
+                   PositionalBinding=$true)]
     [Alias('gb2b')]
     [OutputType('PS.B2.Bucket')]
     Param
     (
         # The Uri for the B2 Api query.
-        [Parameter(Mandatory=$false,
-                   Position=0)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Uri]$ApiUri = $script:SavedB2ApiUri,
         # The account ID for the B2 account.
-        [Parameter(Mandatory=$false,
-                   Position=1)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$AccountID = $script:SavedB2AccountID,
         # The authorization token for the B2 account.
-        [Parameter(Mandatory=$false,
-                   Position=2)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken

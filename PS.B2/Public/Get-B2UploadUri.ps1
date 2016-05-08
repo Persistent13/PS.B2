@@ -46,7 +46,7 @@ function Get-B2UploadUri
 .FUNCTIONALITY
     PS.B2
 #>
-    [CmdletBinding(PositionalBinding=$false)]
+    [CmdletBinding(PositionalBinding=$true)]
     [Alias()]
     [OutputType('PS.B2.UploadUri')]
     Param
@@ -54,20 +54,17 @@ function Get-B2UploadUri
         # The ID of the bucket to query.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
-                   ValueFromPipeline=$true,
-                   Position=0)]
+                   ValueFromPipeline=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$BucketID,
         # The Uri for the B2 Api query.
-        [Parameter(Mandatory=$false,
-                   Position=1)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Uri]$ApiUri = $script:SavedB2ApiUri,
         # The authorization token for the B2 account.
-        [Parameter(Mandatory=$false,
-                   Position=2)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken

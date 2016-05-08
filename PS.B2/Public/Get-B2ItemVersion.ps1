@@ -13,19 +13,19 @@ function Get-B2ItemVersion
     
     Name       : files/hello.txt
     Size       : 6
-    UploadTime : 1439162596000
+    UploadTime : Sunday, August 9, 2015 11:23:16 PM
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f100920ddab886245_d20150809_m232316_c100_v0009990_t0003
     
     Name       : files/world.txt
     Size       : 0
-    UploadTime : 1439162603000
+    UploadTime : Sunday, August 9, 2015 11:23:23 PM
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f100920ddab886247_d20150809_m232323_c100_v0009990_t0005
     
     Name       : files/world.txt
     Size       : 6
-    UploadTime : 1439162596000
+    UploadTime : Sunday, August 9, 2015 11:23:16 PM
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f100920ddab886246_d20150809_m232316_c100_v0009990_t0003
     
@@ -35,19 +35,19 @@ function Get-B2ItemVersion
     
     Name       : files/hello.txt
     Size       : 6
-    UploadTime : 1439162596000
+    UploadTime : Sunday, August 9, 2015 11:23:16 PM
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f100920ddab886245_d20150809_m232316_c100_v0009990_t0003
     
     Name       : files/world.txt
     Size       : 0
-    UploadTime : 1439162603000
+    UploadTime : Sunday, August 9, 2015 11:23:23 PM
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f100920ddab886247_d20150809_m232323_c100_v0009990_t0005
     
     Name       : files/world.txt
     Size       : 6
-    UploadTime : 1439162596000
+    UploadTime : Sunday, August 9, 2015 11:23:16 PM
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f100920ddab886246_d20150809_m232316_c100_v0009990_t0003
     
@@ -69,7 +69,8 @@ function Get-B2ItemVersion
 .FUNCTIONALITY
     PS.B2
 #>
-    [CmdletBinding(SupportsShouldProcess=$false)]
+    [CmdletBinding(SupportsShouldProcess=$false,
+                   PositionalBinding=$true)]
     [Alias('gb2bv')]
     [OutputType('PS.B2.File')]
     Param
@@ -77,20 +78,17 @@ function Get-B2ItemVersion
         # The ID of the bucket to query.
         [Parameter(Mandatory=$true,
                    ValueFromPipeline=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
+                   ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String[]]$BucketID,
         # The Uri for the B2 Api query.
-        [Parameter(Mandatory=$false,
-                   Position=1)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Uri]$ApiUri = $script:SavedB2ApiUri,
         # The authorization token for the B2 account.
-        [Parameter(Mandatory=$false,
-                   Position=2)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken
@@ -114,7 +112,8 @@ function Get-B2ItemVersion
                     $bbReturnInfo = [PSCustomObject]@{
                         'Name' = $info.fileName
                         'Size' = $info.size
-                        'UploadTime' = $info.uploadTimestamp
+                        #Below coverts from Unix time to .NET time
+                        'UploadTime' = ([DateTime]'1/1/1970').AddMilliseconds($info.uploadTimestamp)
                         'Action' = $info.action
                         'ID' = $info.fileId
                     }

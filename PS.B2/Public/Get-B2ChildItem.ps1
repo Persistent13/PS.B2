@@ -24,13 +24,13 @@ function Get-B2ChildItem
     
     Name       : items/hello.txt
     Size       : 6
-    UploadTime : 1439083733000
+    UploadTime : Sunday, August 9, 2015 1:28:53 AM
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f1004ba650fe24e6b_d20150809_m012853_c100_v0009990_t0000
     
     Name       : items/world.txt
     Size       : 6
-    UploadTime : 1439083734000
+    UploadTime : Sunday, August 9, 2015 1:28:54 AM
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f1004ba650fe24e6c_d20150809_m012854_c100_v0009990_t0000
     
@@ -40,19 +40,19 @@ function Get-B2ChildItem
     
     Name       : items/world.txt
     Size       : 6
-    UploadTime : 1439083734000
+    UploadTime : Sunday, August 9, 2015 1:28:54 AM
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f1004ba650fe24e6c_d20150809_m012854_c100_v0009990_t0000
     
     Name       : items/how.txt
     Size       : 6
-    UploadTime : 1439083734000
+    UploadTime : Sunday, August 9, 2015 1:28:54 AM
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f8aa4ba650fe24e6c_d20150809_m012854_c100_v0009990_t0000
     
     Name       : items/are.txt
     Size       : 6
-    UploadTime : 1439083734000
+    UploadTime : Sunday, August 9, 2015 1:28:54 AM
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f1004hf950fe24e6c_d20150809_m012854_c100_v0009990_t0000
     
@@ -69,7 +69,8 @@ function Get-B2ChildItem
 .FUNCTIONALITY
     PS.B2
 #>
-    [CmdletBinding(SupportsShouldProcess=$false)]
+    [CmdletBinding(SupportsShouldProcess=$false,
+                   PositionalBinding=$true)]
     [Alias('gb2ci')]
     [OutputType('PS.B2.File')]
     Param
@@ -77,32 +78,27 @@ function Get-B2ChildItem
         # The ID of the bucket to query.
         [Parameter(Mandatory=$true,
                    ValueFromPipeline=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
+                   ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String[]]$BucketID,
         # The name of the item to start listing from.
-        [Parameter(Mandatory=$false,
-                   Position=1)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$StartName,
         # The number of items to return; the default and max is 1000.
-        [Parameter(Mandatory=$false,
-                   Position=1)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [UInt32]$ItemCount = 1000,
         # The Uri for the B2 Api query.
-        [Parameter(Mandatory=$false,
-                   Position=2)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Uri]$ApiUri = $script:SavedB2ApiUri,
         # The authorization token for the B2 account.
-        [Parameter(Mandatory=$false,
-                   Position=3)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken
@@ -127,7 +123,8 @@ function Get-B2ChildItem
                     $bbReturnInfo = [PSCustomObject]@{
                         'Name' = $info.fileName
                         'Size' = $info.size
-                        'UploadTime' = $info.uploadTimestamp
+                        #Below coverts from Unix time to .NET time
+                        'UploadTime' = ([DateTime]'1/1/1970').AddMilliseconds($info.uploadTimestamp)
                         'Action' = $info.action
                         'ID' = $info.fileId
                     }

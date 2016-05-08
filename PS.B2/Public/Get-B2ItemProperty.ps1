@@ -72,7 +72,8 @@ function Get-B2ItemProperty
 .FUNCTIONALITY
     PS.B2
 #>
-    [CmdletBinding(SupportsShouldProcess=$false)]
+    [CmdletBinding(SupportsShouldProcess=$false,
+                   PositionalBinding=$true)]
     [Alias('gb2ip')]
     [OutputType('PS.B2.FileProperty')]
     Param
@@ -80,20 +81,17 @@ function Get-B2ItemProperty
         # The Uri for the B2 Api query.
         [Parameter(Mandatory=$true,
                    ValueFromPipeline=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
+                   ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String[]]$ID,
         # The Uri for the B2 Api query.
-        [Parameter(Mandatory=$false,
-                   Position=1)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Uri]$ApiUri = $script:SavedB2ApiUri,
         # The authorization token for the B2 account.
-        [Parameter(Mandatory=$false,
-                   Position=2)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken

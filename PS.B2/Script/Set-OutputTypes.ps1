@@ -1,8 +1,5 @@
 if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
 {
-    #Used to import the mime type finder in Invoke-B2ItemUpload
-    Add-Type -AssemblyName System.Web
-
     #Adds account OutputType
     $account = @{
         MemberType = 'NoteProperty'
@@ -56,6 +53,21 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     Update-TypeData @fileProperty -MemberName FileInfo
     Update-TypeData @fileProperty -MemberName Name
 
+    #Adds LargeFileProperty OutputType
+    $largeFileProperty = @{
+        MemberType = 'NoteProperty'
+        TypeName = 'PS.B2.LargeFileProperty'
+        Value = $null
+    }
+    
+    Update-TypeData @largeFileProperty -MemberName AccountID
+    Update-TypeData @largeFileProperty -MemberName BucketID
+    Update-TypeData @largeFileProperty -MemberName UploadTimestamp
+    Update-TypeData @largeFileProperty -MemberName Type
+    Update-TypeData @largeFileProperty -MemberName ID
+    Update-TypeData @largeFileProperty -MemberName FileInfo
+    Update-TypeData @largeFileProperty -MemberName Name
+
     #Adds uploadUri OutputType
     $uploadUri = @{
         MemberType = 'NoteProperty'
@@ -66,6 +78,17 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     Update-TypeData @uploadUri -MemberName BucketID
     Update-TypeData @uploadUri -MemberName UploadUri
     Update-TypeData @uploadUri -MemberName Token
+
+    #Adds largeFileUploadUri OutputType
+    $largeFileUploadUri = @{
+        MemberType = 'NoteProperty'
+        TypeName = 'PS.B2.LargeFileUploadUri'
+        Value = $null
+    }
+
+    Update-TypeData @largeFileUploadUri -MemberName FileID
+    Update-TypeData @largeFileUploadUri -MemberName UploadUri
+    Update-TypeData @largeFileUploadUri -MemberName Token
 
     #Adds removeFile OutputType
     $removeFile = @{

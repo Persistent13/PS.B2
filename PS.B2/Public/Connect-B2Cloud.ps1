@@ -56,15 +56,13 @@ function Connect-B2Cloud
     Param
     (
         # The account ID for the B2 account.
-        [Parameter(Mandatory=$false, 
-                   Position=0)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Alias('ID')]
         [String]$AccountID,
         # The application key to access the B2 account.
-        [Parameter(Mandatory=$false, 
-                   Position=1)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Alias('Key')]

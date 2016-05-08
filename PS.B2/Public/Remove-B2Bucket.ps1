@@ -46,6 +46,7 @@ function Remove-B2Bucket
     PS.B2
 #>
     [CmdletBinding(SupportsShouldProcess=$true,
+                   PositionalBinding=$true,
                    ConfirmImpact='High')]
     [Alias('rb2b')]
     [OutputType('PS.B2.Bucket')]
@@ -54,32 +55,27 @@ function Remove-B2Bucket
         # The ID of the bucket to remove.
         [Parameter(Mandatory=$true,
                    ValueFromPipeline=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
+                   ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String[]]$BucketID,
         # Used to bypass confirmation prompts.
-        [Parameter(Mandatory=$false,
-                   Position=1)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Switch]$Force,
         # The Uri for the B2 Api query.
-        [Parameter(Mandatory=$false,
-                   Position=2)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Uri]$ApiUri = $script:SavedB2ApiUri,
         # The authorization token for the B2 account.
-        [Parameter(Mandatory=$false,
-                   Position=3)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$AccountID = $script:SavedB2AccountID,
         # The authorization token for the B2 account.
-        [Parameter(Mandatory=$false,
-                   Position=4)]
+        [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken
