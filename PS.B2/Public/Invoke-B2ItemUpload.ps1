@@ -113,6 +113,10 @@ function Invoke-B2ItemUpload
     
     Begin
     {
+        if($Path.Length -gt 5GB)
+        {
+            throw 'The file size is over the 5GB limit. Please use Invoke-B2LargeItemUpload for files of this size.'
+        }
         # Pulls the unique pod upload uri for this session.
         $b2Upload = Get-B2UploadUri -BucketID $BucketID
     }
@@ -144,14 +148,14 @@ function Invoke-B2ItemUpload
                     $bbInfo = Invoke-RestMethod -Method Post -Uri $b2Upload.UploadUri -Headers $sessionHeaders -InFile $file
                     
                     $bbReturnInfo = [PSCustomObject]@{
-                        'Name' = $bbInfo.fileName
+                        'FileName' = $bbInfo.fileName
                         'FileInfo' = $bbInfo.fileInfo
-                        'Type' = $bbInfo.contentType
-                        'Length' = $bbInfo.contentLength
+                        'ContentType' = $bbInfo.contentType
+                        'ContentLength' = $bbInfo.contentLength
                         'BucketID' = $bbInfo.bucketId
                         'AccountID' = $bbInfo.accountId
                         'SHA1' = $bbInfo.contentSha1
-                        'ID' = $bbInfo.fileId
+                        'FileID' = $bbInfo.fileId
                     }
                     # bbReturnInfo is returned after Add-ObjectDetail is processed.
                     Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.FileProperty'

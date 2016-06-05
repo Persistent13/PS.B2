@@ -123,8 +123,8 @@ function Remove-B2ItemVersion
                     [String]$sessionBody = @{'fileId'=$b2FileArray[0][$i];'fileName'=$b2FileArray[1][$i]} | ConvertTo-Json
                     $bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
                     $bbReturnInfo = [PSCustomObject]@{
-                        'Name' = $bbInfo.fileName
-                        'ID' = $bbInfo.fileId
+                        'FileName' = $bbInfo.fileName
+                        'FileID' = $bbInfo.fileId
                     }
                     # bbReturnInfo is returned after Add-ObjectDetail is processed.
                     Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.RemoveFile'

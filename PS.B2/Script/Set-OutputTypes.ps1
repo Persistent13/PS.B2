@@ -32,7 +32,7 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     }
     
     Update-TypeData @file -MemberName Action
-    Update-TypeData @file -MemberName ID
+    Update-TypeData @file -MemberName FileID
     Update-TypeData @file -MemberName Name
     Update-TypeData @file -MemberName Size
     Update-TypeData @file -MemberName UploadTime
@@ -49,9 +49,9 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     Update-TypeData @fileProperty -MemberName Length
     Update-TypeData @fileProperty -MemberName SHA1
     Update-TypeData @fileProperty -MemberName Type
-    Update-TypeData @fileProperty -MemberName ID
+    Update-TypeData @fileProperty -MemberName FileID
     Update-TypeData @fileProperty -MemberName FileInfo
-    Update-TypeData @fileProperty -MemberName Name
+    Update-TypeData @fileProperty -MemberName FileName
 
     #Adds LargeFileProperty OutputType
     $largeFileProperty = @{
@@ -63,10 +63,10 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
     Update-TypeData @largeFileProperty -MemberName AccountID
     Update-TypeData @largeFileProperty -MemberName BucketID
     Update-TypeData @largeFileProperty -MemberName UploadTimestamp
-    Update-TypeData @largeFileProperty -MemberName Type
-    Update-TypeData @largeFileProperty -MemberName ID
+    Update-TypeData @largeFileProperty -MemberName ContentType
+    Update-TypeData @largeFileProperty -MemberName FileID
     Update-TypeData @largeFileProperty -MemberName FileInfo
-    Update-TypeData @largeFileProperty -MemberName Name
+    Update-TypeData @largeFileProperty -MemberName FileName
 
     #Adds uploadUri OutputType
     $uploadUri = @{
@@ -97,6 +97,24 @@ if(-not $(Get-TypeData -TypeName 'PS.B2.*'))
         Value = $null
     }
 
-    Update-TypeData @removeFile -MemberName ID
-    Update-TypeData @removeFile -MemberName Name
+    Update-TypeData @removeFile -MemberName FileID
+    Update-TypeData @removeFile -MemberName FileName
+    
+    #Adds largeFileUploadComplete OutputType
+    $largeFileUploadComplete = @{
+        MemberType = 'NoteProperty'
+        TypeName = 'PS.B2.LargeFileUploadComplete'
+        Value = $null
+    }
+    
+    Update-TypeData @largeFileUploadComplete -MemberName AccountID
+    Update-TypeData @largeFileUploadComplete -MemberName Action
+    Update-TypeData @largeFileUploadComplete -MemberName BucketID
+    Update-TypeData @largeFileUploadComplete -MemberName ContentLength
+    Update-TypeData @largeFileUploadComplete -MemberName SHA1
+    Update-TypeData @largeFileUploadComplete -MemberName ContentType
+    Update-TypeData @largeFileUploadComplete -MemberName FileID
+    Update-TypeData @largeFileUploadComplete -MemberName FileInfo
+    Update-TypeData @largeFileUploadComplete -MemberName FileName
+    Update-TypeData @largeFileUploadComplete -MemberName UploadTimestamp
 }

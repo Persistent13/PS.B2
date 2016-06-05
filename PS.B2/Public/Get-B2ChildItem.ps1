@@ -121,12 +121,12 @@ function Get-B2ChildItem
                 foreach($info in $bbInfo.files)
                 {
                     $bbReturnInfo = [PSCustomObject]@{
-                        'Name' = $info.fileName
+                        'FileName' = $info.fileName
                         'Size' = $info.size
                         #Below coverts from Unix time to .NET time
                         'UploadTime' = ([DateTime]'1/1/1970').AddMilliseconds($info.uploadTimestamp)
                         'Action' = $info.action
-                        'ID' = $info.fileId
+                        'FileID' = $info.fileId
                     }
                     # bbReturnInfo is returned after Add-ObjectDetail is processed.
                     Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.File'

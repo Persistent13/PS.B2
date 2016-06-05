@@ -1,4 +1,4 @@
-function Invoke-B2ItemUpload
+function Start-B2LargeFileUpload
 {
 <#
 .SYNOPSIS
@@ -26,85 +26,104 @@ function Invoke-B2ItemUpload
 .FUNCTIONALITY
     PS.B2
 #>
-    [CmdletBinding(SupportsShouldProcess=$true,
-                   PositionalBinding=$true,
-                   ConfirmImpact='Medium')]
-    [Alias('ib2lfu')]
-    [OutputType('PS.B2.FileProperty')]
+    [CmdletBinding(SupportsShouldProcess=$false,
+                   PositionalBinding=$true)]
+    [Alias()]
+    [OutputType()]
     Param
     (
-        # The ID of the bucket to upload to.
-        [Parameter(Mandatory=$true)]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
-        [String]$BucketID,
-        # The file(s) to upload.
+        # The file to upload.
         [Parameter(Mandatory=$true,
                    ValueFromPipeline=$true,
                    ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [Alias('FullName')]
-        [String[]]$Path,
-        # Used to bypass confirmation prompts.
+        [String]$Path,
+        # The ID of the file to upload.
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [String]$FileID,
+        # Sets the size of the file chunks.
         [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [Switch]$Force
+        [ValidateRange(100MB,5GB)]
+        [UInt64]$ChunkSize = 100MB,
+        # The Uri for the B2 Api query.
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [Uri]$ApiUri = $script:SavedB2ApiUri,
+        # The authorization token for the B2 account.
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiToken = $script:SavedB2ApiToken
     )
     
     Begin
     {
-        # Pulls the unique pod upload uri for this session.
-        $b2Upload = Get-B2LargeFileUploadUri -BucketID $BucketID
+        try
+        {
+            $bbLargeUploadUri = Get-B2LargeFileUploadUri -FileID $FileID -ApiUri $ApiUri -ApiToken $ApiToken
+        }
+        catch
+        {
+            $errorDetail = $_.Exception.Message
+            throw "Unable to connect to the B2 cloud: $errorDetail"
+        }
+        $fileIO = [IO.File]::OpenRead($Path)
+        $buffer = [Byte[]]::New($ChunkSize)
+        [UInt32]$count = [UInt32]$i = 0
+        $bbReturnInfo = @()
     }
     Process
     {
-        foreach($file in $Path)
+        try
         {
-            if($Force -or $PSCmdlet.ShouldProcess($file, "Upload to bucket $BucketID."))
+            do
             {
-                try
+                $count = $fileIO.Read($buffer,0,$buffer.Length)
+                if($count -gt 0)
                 {
-                    # Required file info is retireved in this block and escapes HTTP data.
-                    [String]$b2FileName = (Get-Item -Path $file).Name
-                    $b2FileName = [System.Uri]::EscapeDataString($b2FileName)
-                    # SHA1 is used as per B2 specification.
-                    [String]$b2FileSHA1 = (Get-FileHash -Path $file -Algorithm SHA1).Hash
-                    [String]$b2FileAuthor = (Get-Acl -Path $file).Owner
-                    # Below the file author is parsed.
-                    $b2FileAuthor = $b2FileAuthor.Substring($b2FileAuthor.IndexOf('\')+1)
-                    # The file information is placed into the session headers.
-                    [Hashtable]$sessionHeaders = @{
-                        'Authorization' = $b2Upload.Token
-                        'X-Bz-File-Name' = $b2FileName
-                        'Content-Type' = 'b2/x-auto'
-                        'X-Bz-Content-Sha1' = $b2FileSHA1
-                        'X-Bz-Info-Author' = $b2FileAuthor
+                    $to = '{0}.{1}.{2}' -f $Path,$i,'tmp'
+                    $toFile = [IO.File]::OpenWrite($to)
+                    try
+                    {
+                        $toFile.Write($buffer,0,$count)
+                        $toFile.Close()
+                        [Hashtable]$sessionHeaders = @{
+                            'Authorization' = $bbLargeUploadUri.Token
+                            'X-Bz-Part-Number' = $i
+                            'X-Bz-Content-Sha1' = (Get-FileHash -Path $to -Algorithm SHA1).Hash
+                            'Content-Length' = $to.Length
+                        }
+                        $bbReturnInfo += Invoke-RestMethod -Method Post -Uri $bbLargeUploadUri.UploadUri -Headers $sessionHeaders -InFile $to
+                        Remove-Item -Path $to -Force
                     }
-                    
-                    $bbInfo = Invoke-RestMethod -Method Post -Uri $b2Upload.UploadUri -Headers $sessionHeaders -InFile $file
-                    
-                    $bbReturnInfo = [PSCustomObject]@{
-                        'Name' = $bbInfo.fileName
-                        'FileInfo' = $bbInfo.fileInfo
-                        'Type' = $bbInfo.contentType
-                        'Length' = $bbInfo.contentLength
-                        'BucketID' = $bbInfo.bucketId
-                        'AccountID' = $bbInfo.accountId
-                        'SHA1' = $bbInfo.contentSha1
-                        'ID' = $bbInfo.fileId
+                    finally
+                    {
+                        $toFile.Close()
+                        Remove-Item -Path $to -Force
+                        $errorDetail = $_.Exception.Message
+                        Write-Error -Message "Unable to split the file into parts: $errorDetail"
                     }
-                    # bbReturnInfo is returned after Add-ObjectDetail is processed.
-                    Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.FileProperty'
                 }
-                catch
-                {
-                    $errorDetail = $_.Exception.Message
-                    Write-Error -Exception "Unable to upload the file.`n`r$errorDetail" `
-                        -Message "Unable to upload the file.`n`r$errorDetail" -Category InvalidOperation
-                }
+                $i++
             }
+            while($count -gt 0)
         }
+        finally
+        {
+            $fileIO.Close()
+            Remove-Item -Path $to -Force
+            $errorDetail = $_.Exception.Message
+            Write-Error -Message "Unable to split the file into parts: $errorDetail"
+        }
+    }
+    End
+    {
+        Write-Output -InputObject $bbReturnInfo
     }
 }

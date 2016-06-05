@@ -112,14 +112,14 @@ function Get-B2ItemProperty
                 [String]$sessionBody = @{'fileId'=$file} | ConvertTo-Json
                 $bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
                 $bbReturnInfo = [PSCustomObject]@{
-                    'Name' = $bbInfo.fileName
+                    'FileName' = $bbInfo.fileName
                     'FileInfo' = $bbInfo.fileInfo
-                    'Type' = $bbInfo.contentType
-                    'Length' = $bbInfo.contentLength
+                    'ContentType' = $bbInfo.contentType
+                    'ContentLength' = $bbInfo.contentLength
                     'BucketID' = $bbInfo.bucketId
                     'AccountID' = $bbInfo.accountId
                     'SHA1' = $bbInfo.contentSha1
-                    'ID' = $bbInfo.fileId
+                    'FileID' = $bbInfo.fileId
                 }
                 # bbReturnInfo is returned after Add-ObjectDetail is processed.
                 Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.FileProperty'

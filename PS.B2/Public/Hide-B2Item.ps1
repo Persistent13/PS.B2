@@ -109,12 +109,12 @@ function Hide-B2Item
                     [String]$sessionBody = @{'bucketId'=$BucketID;'fileName'=$file} | ConvertTo-Json
                     $bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
                     $bbReturnInfo = [PSCustomObject]@{
-                        'Name' = $bbInfo.fileName
+                        'FileName' = $bbInfo.fileName
                         'Size' = $bbInfo.size
                         #Below coverts from Unix time to .NET time
                         'UploadTime' = ([DateTime]'1/1/1970').AddMilliseconds($bbInfo.uploadTimestamp)
                         'Action' = $bbInfo.action
-                        'ID' = $bbInfo.fileId
+                        'FileID' = $bbInfo.fileId
                     }
                     # bbReturnInfo is returned after Add-ObjectDetail is processed.
                     Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.File'
