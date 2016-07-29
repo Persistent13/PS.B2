@@ -2,24 +2,24 @@ function New-B2LargeFileUpload
 {
 <#
 .SYNOPSIS
-    
+
 .DESCRIPTION
-    
+
 .EXAMPLE
-    
+
 .EXAMPLE
-    
+
 .INPUTS
     System.String
-    
+
         This cmdlet takes the BucketID, Path, ApiUri and ApiToken as strings.
-        
+
     System.Uri
-    
+
         This cmdlet takes the ApiUri as a Uri.
 .OUTPUTS
     PS.B2.LargeFileProperty
-    
+
         This cmdlet will output a PS.B2.LargeFileProperty object holding the upload properties.
 .LINK
     https://www.backblaze.com/b2/docs/
@@ -45,7 +45,7 @@ function New-B2LargeFileUpload
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Alias('FullName')]
-        [String[]]$Path,
+        [System.IO.FileInfo[]]$Path,
         # The Uri for the B2 Api query.
         [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
@@ -57,7 +57,7 @@ function New-B2LargeFileUpload
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken
     )
-    
+
     Begin
     {
         [Hashtable]$sessionHeaders = @{'Authorization'=$ApiToken}
@@ -73,7 +73,7 @@ function New-B2LargeFileUpload
                 # Required file info is retireved in this block and escapes HTTP data.
                 [String]$b2FileName = (Get-Item -Path $file).Name
                 $b2FileName = [System.Uri]::EscapeDataString($b2FileName)
-                
+
                 [String]$sessionBody = @{'fileName'=$b2FileName;'bucketId'=$BucketID;'contentType'='b2/x-auto'} | ConvertTo-Json
                 $bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
                 $bbReturnInfo = [PSCustomObject]@{
