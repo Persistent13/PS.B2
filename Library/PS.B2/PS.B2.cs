@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 
 namespace PSB2
 {
@@ -9,7 +10,10 @@ namespace PSB2
         public Uri DownloadUri;
         public string Token;
         public Account() { }
-        public Account(string AccountId, Uri ApiUri, Uri DownloadUri, string Token)
+        public Account(string AccountId,
+                       Uri ApiUri,
+                       Uri DownloadUri,
+                       string Token)
         {
             this.AccountId = AccountId;
             this.ApiUri = ApiUri;
@@ -29,7 +33,10 @@ namespace PSB2
         public BucketType BucketType;
         public long AccountId;
         public Bucket() {  }
-        public Bucket(string BucketName, long BucketId, BucketType BucketType, long AccountId)
+        public Bucket(string BucketName,
+                      long BucketId,
+                      BucketType BucketType,
+                      long AccountId)
         {
             this.BucketName = BucketName;
             this.BucketId = BucketId;
@@ -50,7 +57,11 @@ namespace PSB2
         public Action Action;
         public long FileId;
         public File() {  }
-        public File(string Name, long Size, DateTime UploadTime, Action Action, long FileId)
+        public File(string Name,
+                    long Size,
+                    DateTime UploadTime,
+                    Action Action,
+                    long FileId)
         {
             this.Name = Name;
             this.Size = Size;
@@ -58,7 +69,11 @@ namespace PSB2
             this.Action = Action;
             this.FileId = FileId;
         }
-        public File(string Name, long Size, long UploadUnixTimestamp, Action Action, long FileId)
+        public File(string Name,
+                    long Size,
+                    long UploadUnixTimestamp,
+                    Action Action,
+                    long FileId)
         {
             var x = FromUnixTime(UploadUnixTimestamp);
             this.Name = Name;
@@ -77,22 +92,25 @@ namespace PSB2
             return this.Name;
         }
     }
-    public enum FileType { /* TODO: Add FileType enumerables */ }
     public class FileProperty
     {
         public string Name;
         public string FileInfo;
-        public FileType Type;
+        public string Type;
         public long Length;
         public long BucketId;
         public long AccountId;
-        public string SHA1;
+        public SHA1 SHA1;
         public long FileId;
         public FileProperty() {  }
-        public FileProperty(
-            string Name, string FileInfo, FileType Type, long Length,
-            long BucketId, long AccountId, string SHA1, long FileId
-        )
+        public FileProperty(string Name,
+                            string FileInfo,
+                            string Type,
+                            long Length,
+                            long BucketId,
+                            long AccountId,
+                            SHA1 SHA1,
+                            long FileId)
         {
             this.Name = Name;
             this.FileInfo = FileInfo;
@@ -106,6 +124,23 @@ namespace PSB2
         public override string ToString()
         {
             return this.Name;
+        }
+    }
+    public class UploadUri
+    {
+        public long BucketId;
+        public Uri BucketUri;
+        public string Token;
+        public UploadUri() {  }
+        public UploadUri(long BucketId, Uri BucketUri, string Token)
+        {
+            this.BucketId = BucketId;
+            this.BucketUri = BucketUri;
+            this.Token = Token;
+        }
+        public override string ToString()
+        {
+            return this.BucketUri.ToString();
         }
     }
 }
