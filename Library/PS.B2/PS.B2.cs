@@ -9,16 +9,22 @@ namespace PSB2
         public Uri ApiUri;
         public Uri DownloadUri;
         public string Token;
+        public long RecommendedPartSize;
+        public long MinimumPartSize;
         public Account() { }
         public Account(string AccountId,
                        Uri ApiUri,
                        Uri DownloadUri,
-                       string Token)
+                       string Token,
+                       long RecommendedPartSize,
+                       long MinimumPartSize)
         {
             this.AccountId = AccountId;
             this.ApiUri = ApiUri;
             this.DownloadUri = DownloadUri;
             this.Token = Token;
+            this.RecommendedPartSize = RecommendedPartSize;
+            this.MinimumPartSize = MinimumPartSize;
         }
         public override string ToString()
         {
@@ -29,63 +35,87 @@ namespace PSB2
     public class Bucket
     {
         public string BucketName;
-        public long BucketId;
+        public string BucketId;
+        public string BucketInfo;
+        public string LifecycleRules;
         public BucketType BucketType;
-        public long AccountId;
+        public string AccountId;
+        public long Revision;
         public Bucket() {  }
         public Bucket(string BucketName,
-                      long BucketId,
+                      string BucketId,
                       BucketType BucketType,
-                      long AccountId)
+                      string AccountId,
+                      string BucketInfo,
+                      string LifecycleRules,
+                      long Revision)
         {
             this.BucketName = BucketName;
             this.BucketId = BucketId;
             this.BucketType = BucketType;
             this.AccountId = AccountId;
+            this.BucketInfo = BucketInfo;
+            this.LifecycleRules = LifecycleRules;
+            this.Revision = Revision;
         }
         public override string ToString()
         {
             return this.BucketName;
         }
     }
-    public enum Action { upload, folder }
+    public enum Action { upload, folder, hide }
     public class File
     {
         public string Name;
         public long Size;
         public DateTime UploadTime;
-        public Action Action;
-        public long FileId;
+        public Action ItemType;
+        public string FileId;
+        public string ContentType;
+        public string SHA1;
+        public string Info;
         public File() {  }
         public File(string Name,
                     long Size,
                     DateTime UploadTime,
-                    Action Action,
-                    long FileId)
+                    Action ItemType,
+                    string FileId,
+                    string ContentType,
+                    string SHA1,
+                    string Info)
         {
             this.Name = Name;
             this.Size = Size;
             this.UploadTime = UploadTime;
-            this.Action = Action;
+            this.ItemType = ItemType;
             this.FileId = FileId;
+            this.ContentType = ContentType;
+            this.SHA1 = SHA1;
+            this.Info = Info;
         }
         public File(string Name,
                     long Size,
                     long UploadUnixTimestamp,
-                    Action Action,
-                    long FileId)
+                    Action ItemType,
+                    string FileId,
+                    string ContentType,
+                    string SHA1,
+                    string Info)
         {
             DateTime x = FromUnixTime(UploadUnixTimestamp);
             this.Name = Name;
             this.Size = Size;
             this.UploadTime = x;
-            this.Action = Action;
+            this.ItemType = ItemType;
             this.FileId = FileId;
+            this.ContentType = ContentType;
+            this.SHA1 = SHA1;
+            this.Info = Info;
         }
         private static DateTime FromUnixTime(long unixTime)
         {
             var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            return epoch.AddSeconds(unixTime).ToLocalTime();
+            return epoch.AddMilliseconds(unixTime).ToLocalTime();
         }
         public override string ToString()
         {
@@ -98,19 +128,19 @@ namespace PSB2
         public string FileInfo;
         public string Type;
         public long Length;
-        public long BucketId;
-        public long AccountId;
+        public string BucketId;
+        public string AccountId;
         public SHA1 SHA1;
-        public long FileId;
+        public string FileId;
         public FileProperty() {  }
         public FileProperty(string Name,
                             string FileInfo,
                             string Type,
                             long Length,
-                            long BucketId,
-                            long AccountId,
+                            string BucketId,
+                            string AccountId,
                             SHA1 SHA1,
-                            long FileId)
+                            string FileId)
         {
             this.Name = Name;
             this.FileInfo = FileInfo;
@@ -128,11 +158,11 @@ namespace PSB2
     }
     public class UploadUri
     {
-        public long BucketId;
+        public string BucketId;
         public Uri BucketUri;
         public string Token;
         public UploadUri() {  }
-        public UploadUri(long BucketId, Uri BucketUri, string Token)
+        public UploadUri(string BucketId, Uri BucketUri, string Token)
         {
             this.BucketId = BucketId;
             this.BucketUri = BucketUri;

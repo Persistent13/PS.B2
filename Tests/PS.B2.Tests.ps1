@@ -99,7 +99,7 @@ InModuleScope PS.B2 {
         Context "Connect-B2Cloud" {
             It "Does not error with valid input" {
                 Mock Invoke-RestMethod { return $b2_account }
-                Connect-B2Cloud -AccountID '30f20426f0b1' -ApplicationKey 56709 | Should Not Throw
+                {Connect-B2Cloud -AccountID '30f20426f0b1' -ApplicationKey 56709} | Should Not Throw
             }
             It "Returns only 1 account" {
                 Mock Invoke-RestMethod { return $b2_account }
@@ -113,7 +113,7 @@ InModuleScope PS.B2 {
         Context "Get-B2Bucket" {
             It "Does not error with valid input" {
                 Mock Invoke-RestMethod { return $b2_buckets }
-                Get-B2Bucket | Should Not Throw
+                {Get-B2Bucket} | Should Not Throw
             }
             It "Lists all $($b2_buckets.buckets.Count) examples" {
                 Mock Invoke-RestMethod { return $b2_buckets }
@@ -121,13 +121,13 @@ InModuleScope PS.B2 {
             }
             It "Has the correct type set" {
                 Mock Invoke-RestMethod { return $b2_buckets }
-                (Get-B2Bucket).GetType().Name | Should Be 'Bucket'
+                (Get-B2Bucket)[0].GetType().Name | Should Be 'Bucket'
             }
         }
         Context "Get-B2ChildItem" {
             It "Does not error with valid input" {
                 Mock Invoke-RestMethod { return $b2_item }
-                Get-B2ChildItem -BucketID 'F@K30UT' | Should Not Throw
+                {Get-B2ChildItem -BucketID 'F@K30UT'} | Should Not Throw
             }
             It "Lists the $($b2_item.files.Count) examples" {
                 Mock Invoke-RestMethod { return $b2_item }
@@ -138,12 +138,12 @@ InModuleScope PS.B2 {
                 Mock Invoke-RestMethod { return $b2_item } -ParameterFilter { $Uri -eq $('{0}{1}' -f $b2_account['apiUrl'],'b2api/v1/b2_list_file_names') }
                 # Mock for Get-B2Bucket
                 Mock Invoke-RestMethod { return $b2_buckets } -ParameterFilter { $Uri -eq $('{0}{1}' -f $b2_account['apiUrl'],'/b2api/v1/b2_list_buckets') }
-                (Get-B2Bucket | Get-B2ChildItem) | Should Not Throw
+                {Get-B2Bucket | Get-B2ChildItem} | Should Not Throw
                 (Get-B2Bucket | Get-B2ChildItem).Count | Should Be $b2_item.files.Count
             }
             It "Has the correct type set" {
                 Mock Invoke-RestMethod { return $b2_item }
-                (Get-B2ChildItem -BucketID 'F@K30UT').GetType().Name | Should Be 'File'
+                (Get-B2ChildItem -BucketID 'F@K30UT')[0].GetType().Name | Should Be 'File'
             }
         }
         Context "Get-B2ItemProperty" {
@@ -155,7 +155,7 @@ InModuleScope PS.B2 {
         Context "Get-B2ItemVersion" {
             It "Does not error with valid input" {
                 Mock Invoke-RestMethod { return $b2_item_version }
-                Get-B2ItemVersion -BucketID 'F@K30UT' | Should Not Throw
+                {Get-B2ItemVersion -BucketID 'F@K30UT'} | Should Not Throw
             }
             It "Lists the $($b2_item_version.files.Count) examples" {
                 Mock Invoke-RestMethod { return $b2_item_version }
@@ -166,18 +166,18 @@ InModuleScope PS.B2 {
                 Mock Invoke-RestMethod { return $b2_item_version } -ParameterFilter { $Uri -eq $('{0}{1}' -f $b2_account['apiUrl'],'/b2api/v1/b2_list_file_versions') }
                 # Mock for Get-B2Bucket
                 Mock Invoke-RestMethod { return $b2_buckets } -ParameterFilter { $Uri -eq $('{0}{1}' -f $b2_account['apiUrl'],'/b2api/v1/b2_list_buckets') }
-                (Get-B2Bucket | Get-B2ItemVersion) | Should Not Throw
+                {Get-B2Bucket | Get-B2ItemVersion} | Should Not Throw
                 (Get-B2Bucket | Get-B2ItemVersion).Count | Should Be $b2_item.files.Count
             }
             It "Has the correct type set" {
                 Mock Invoke-RestMethod { return $b2_item_version }
-                (Get-B2ItemVersion -BucketID 'F@K30UT').GetType().Name | Should Be 'File'
+                (Get-B2ItemVersion -BucketID 'F@K30UT')[0].GetType().Name | Should Be 'File'
             }
         }
         Context "Get-B2UploadUri" {
             It "Does not error with valid input" {
                 Mock Invoke-RestMethod { return $b2_upload_uri }
-                Get-B2UploadUri -BucketID 'F@K30UT' | Should Not Throw
+                {Get-B2UploadUri -BucketID 'F@K30UT'} | Should Not Throw
             }
             It "Lists 1 example for a single input" {
                 Mock Invoke-RestMethod { return $b2_upload_uri }

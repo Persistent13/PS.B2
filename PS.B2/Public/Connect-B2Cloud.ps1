@@ -106,7 +106,9 @@ function Connect-B2Cloud
                 $bbInfo.accountId,
                 $bbInfo.apiUrl,
                 $bbInfo.downloadUrl,
-                $bbInfo.authorizationToken
+                $bbInfo.authorizationToken,
+                $bbInfo.recommendedPartSize,
+                $bbInfo.absoluteMinimumPartSize
             )
 
             Write-Output $bbReturnInfo
