@@ -7,36 +7,36 @@ function Remove-B2Bucket
 .DESCRIPTION
     Remove-B2Bucket will remove the selected bucket.
     The cmdlet will only remove a bucket if the bucket is empty.
-    
+
     An API key is required to use this cmdlet.
 .EXAMPLE
     Remove-B2Bucket -BucketID ee7d351ff1262048503e091f
-    
+
     BucketName            BucketID                 BucketType AccountID
     ----------            --------                 ---------- ---------
     stoic-barbarian-lemur 4a48fe8875c6214145260818 allPublic  010203040506
-    
+
     The cmdlet above will remove the bucket with the ID of ee7d351ff1262048503e091f.
 .EXAMPLE
     PS C:\>Get-B2Bucket | Remove-B2Bucket -Force
-    
+
     BucketName            BucketID                 BucketType AccountID
     ----------            --------                 ---------- ---------
     stoic-barbarian-lemur 4a48fe8875c6214145260818 allPrivate 010203040506
     frisky-navigator-lion 4a48fe8875c6214145260819 allPrivate 010203040506
-    
+
     The cmdlet above will remove all buckets associated with the account without prompting for confirmation.
 .INPUTS
     System.String
-    
+
         This cmdlet takes the AccountID and ApplicationKey as strings.
-    
+
     System.Uri
-    
+
         This cmdlet takes the ApiUri as a uri.
 .OUTPUTS
     PS.B2.Bucket
-    
+
         The cmdlet will output a PS.B2.Bucket object holding the bucket info.
 .LINK
     https://www.backblaze.com/b2/docs/
@@ -48,7 +48,7 @@ function Remove-B2Bucket
     [CmdletBinding(SupportsShouldProcess=$true,
                    ConfirmImpact='High')]
     [Alias('rb2b')]
-    [OutputType('PS.B2.Bucket')]
+    [OutputType([PSB2.Bucket])]
     Param
     (
         # The ID of the bucket to remove.
@@ -84,7 +84,7 @@ function Remove-B2Bucket
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken
     )
-    
+
     Begin
     {
         [Hashtable]$sessionHeaders = @{'Authorization'=$ApiToken}
@@ -100,14 +100,14 @@ function Remove-B2Bucket
                 {
                     [String]$sessionBody = @{'accountId'=$AccountID;'bucketId'=$bucket} | ConvertTo-Json
                     $bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
-                    $bbReturnInfo = [PSCustomObject]@{
-                        'BucketName' = $bbInfo.bucketName
-                        'BucketID' = $bbInfo.bucketId
-                        'BucketType' = $bbInfo.bucketType
-                        'AccountID' = $bbInfo.accountId
-                    }
-                    # bbReturnInfo is returned after Add-ObjectDetail is processed.
-                    Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Bucket'
+                    $bbReturnInfo = [PSB2.Bucket]::new(
+                        $bbInfo.bucketName,
+                        $bbInfo.bucketId,
+                        $bbInfo.bucketType,
+                        $bbInfo.accountId
+                    )
+
+                    Write-Output $bbReturnInfo
                 }
                 catch
                 {

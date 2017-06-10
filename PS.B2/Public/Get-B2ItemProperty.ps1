@@ -5,9 +5,9 @@ function Get-B2ItemProperty
     The Get-B2ItemProperty cmdlet will pull extra file information.
 .DESCRIPTION
     The Get-B2ItemProperty cmdlet will pull extra file information for the specified file ID.
-    
+
     The file information to be returned:
-    
+
     - Name
     - FileInfo
     - Type
@@ -16,11 +16,11 @@ function Get-B2ItemProperty
     - AccountID
     - SHA1
     - ID
-    
+
     An API key is required to use this cmdlet.
 .EXAMPLE
     Get-B2ItemProperty -ID 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0001
-    
+
     Name          : akitty.jpg
     ItemInfo      :
     ContentType   : image/jpeg
@@ -29,11 +29,11 @@ function Get-B2ItemProperty
     AccountID     : 7eecc42b9675
     ContentSHA1   : a01a21253a07fb08a354acd30f3a6f32abb76821
     ID            : 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0001
-    
+
     The cmdlet above returns the item properties for the ID given.
 .EXAMPLE
     PS C:\>Get-B2Bucket | Get-B2ChildItem | Get-B2ItemProperty
-    
+
     Name          : akitty.jpg
     ItemInfo      :
     ContentType   : image/jpeg
@@ -42,7 +42,7 @@ function Get-B2ItemProperty
     AccountID     : 7eecc42b9675
     ContentSHA1   : a01a21253a07fb08a354acd30f3a6f32abb76821
     ID            : 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0001
-    
+
     Name          : adoggy.jpg
     ItemInfo      : @{author=John}
     ContentType   : image/jpeg
@@ -51,19 +51,19 @@ function Get-B2ItemProperty
     AccountID     : 7eecc42b9675
     ContentSHA1   : 3100d797d8c0282aeb0afac63f0795117892d2fd
     ID            : 4_ze73ede9c9c8412db49f60715_f100b4e93fbae6252_d20150824_m224353_c900_v8881000_t0002
-    
+
     The cmdlets above get the file properties for the first 1000 files in all buckets.
 .INPUTS
     System.String
-    
+
         This cmdlet takes the FieldID, AccountID and ApiToken as strings.
-        
+
     System.Uri
-    
+
         This cmdlet takes the ApiUri as a Uri.
 .OUTPUTS
     PS.B2.FileProperty
-    
+
         This cmdlet will output a PS.B2.FileProperty object holding the file properties.
 .LINK
     https://www.backblaze.com/b2/docs/
@@ -74,7 +74,7 @@ function Get-B2ItemProperty
 #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [Alias('gb2ip')]
-    [OutputType('PS.B2.FileProperty')]
+    [OutputType([PSB2.FileProperty])]
     Param
     (
         # The Uri for the B2 Api query.
@@ -98,7 +98,7 @@ function Get-B2ItemProperty
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken
     )
-    
+
     Begin
     {
         [Hashtable]$sessionHeaders = @{'Authorization'=$ApiToken}
@@ -113,18 +113,18 @@ function Get-B2ItemProperty
             {
                 [String]$sessionBody = @{'fileId'=$file} | ConvertTo-Json
                 $bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
-                $bbReturnInfo = [PSCustomObject]@{
-                    'Name' = $bbInfo.fileName
-                    'FileInfo' = $bbInfo.fileInfo
-                    'Type' = $bbInfo.contentType
-                    'Length' = $bbInfo.contentLength
-                    'BucketID' = $bbInfo.bucketId
-                    'AccountID' = $bbInfo.accountId
-                    'SHA1' = $bbInfo.contentSha1
-                    'ID' = $bbInfo.fileId
-                }
-                # bbReturnInfo is returned after Add-ObjectDetail is processed.
-                Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.FileProperty'
+                $bbReturnInfo = [PSB2.FileProperty]::new(
+                    $bbInfo.fileName,
+                    $bbInfo.fileInfo,
+                    $bbInfo.contentType,
+                    $bbInfo.contentLength,
+                    $bbInfo.bucketId,
+                    $bbInfo.accountId,
+                    $bbInfo.contentSha1,
+                    $bbInfo.fileId
+                )
+
+                Write-Output $bbReturnInfo
             }
             catch
             {

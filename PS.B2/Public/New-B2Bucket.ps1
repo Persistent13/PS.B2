@@ -5,36 +5,36 @@ function New-B2Bucket
     New-B2Bucket will create a new private or public bucket and requires a globally unique name.
 .DESCRIPTION
     New-B2Bucket will create a new private or public bucket and requires a globally unique name.
-    
+
     An API key is required to use this cmdlet.
 .EXAMPLE
     New-B2Bucket -BucketName stoic-barbarian-lemur -BucketType allPublic
-    
+
     BucketName            BucketID                 BucketType AccountID
     ----------            --------                 ---------- ---------
     stoic-barbarian-lemur 4a48fe8875c6214145260818 allPublic  010203040506
-    
+
     The cmdlet above will create a public bucket with the name of stoic-barbarian-lemur.
 .EXAMPLE
     PS C:\>New-B2Bucket -BucketName stoic-barbarian-lemur, frisky-navigator-lion -BucketType allPrivate
-    
+
     BucketName            BucketID                 BucketType AccountID
     ----------            --------                 ---------- ---------
     stoic-barbarian-lemur 4a48fe8875c6214145260818 allPrivate 010203040506
     frisky-navigator-lion 4a48fe8875c6214145260819 allPrivate 010203040506
-    
+
     The cmdlet above will create a public bucket with the name of stoic-barbarian-lemur and frisky-navigator-lion.
 .INPUTS
     System.String
-    
+
         This cmdlet takes the AccountID and ApplicationKey as strings.
 .OUTPUTS
     PS.B2.Bucket
-    
+
         The cmdlet will output a PS.B2.Bucket object holding the bucket info.
-    
+
     System.Uri
-    
+
         This cmdlet takes the ApiUri as a uri.
 .LINK
     https://www.backblaze.com/b2/docs/
@@ -46,7 +46,7 @@ function New-B2Bucket
     [CmdletBinding(SupportsShouldProcess=$true,
                    ConfirmImpact='Low')]
     [Alias('nb2b')]
-    [OutputType('PS.B2.Bucket')]
+    [OutputType([PSB2.Bucket])]
     Param
     (
         # The name of the new B2 bucket.
@@ -88,7 +88,7 @@ function New-B2Bucket
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken
     )
-    
+
     Begin
     {
         [Hashtable]$sessionHeaders = @{'Authorization'=$ApiToken}
@@ -103,14 +103,14 @@ function New-B2Bucket
                 {
                     [Uri]$b2ApiUri = "$ApiUri/b2api/v1/b2_create_bucket?accountId=$AccountID&bucketName=$bucket&bucketType=$BucketType"
                     $bbInfo = Invoke-RestMethod -Method Get -Uri $b2ApiUri -Headers $sessionHeaders
-                    $bbReturnInfo = [PSCustomObject]@{
-                        'BucketName' = $bbInfo.bucketName
-                        'BucketID' = $bbInfo.bucketId
-                        'BucketType' = $bbInfo.bucketType
-                        'AccountID' = $bbInfo.accountId
-                    }
-                    # bbReturnInfo is returned after Add-ObjectDetail is processed.
-                    Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Bucket'
+                    $bbReturnInfo = [PSB2.Bucket]::new(
+                        $bbInfo.bucketName,
+                        $bbInfo.bucketId,
+                        $bbInfo.bucketType,
+                        $bbInfo.accountId
+                    )
+
+                    Write-Output $bbReturnInfo
                 }
                 catch
                 {

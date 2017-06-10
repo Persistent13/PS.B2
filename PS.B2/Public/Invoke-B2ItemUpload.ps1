@@ -6,14 +6,14 @@ function Invoke-B2ItemUpload
 .DESCRIPTION
     The Invoke-B2ItemUpload cmdlet uploads files to a specified bucket.
     When uploading a file keep in mind that:
-    
+
     - It must not exceed 5 billion bytes or 4.6 GB
     - It's name must be a UTF-8 string with a max size of 1000 bytes.
-    
+
     An API key is required to use this cmdlet.
 .EXAMPLE
     Invoke-B2ItemUpload -BucketID 4a48fe8875c6214145260818 -Path '.\hello.txt'
-    
+
     Name          : hello.txt
     FileInfo      : @{author=Administrators}
     Type          : text/plain
@@ -22,12 +22,12 @@ function Invoke-B2ItemUpload
     AccountID     : 30f20426f0b1
     SHA1          : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
     ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
-    
+
     The cmdlet above will upload the file hello.txt to the selected bucket ID and metadata about the
     uploaded file will be returned if the cmdlet is successfull.
 .EXAMPLE
     PS C:\>Invoke-B2ItemUpload -BucketID 4a48fe8875c6214145260818 -Path '.\hello.txt','.\world.txt'
-    
+
     Name          : hello.txt
     FileInfo      : @{author=Administrators}
     Type          : text/plain
@@ -36,7 +36,7 @@ function Invoke-B2ItemUpload
     AccountID     : 30f20426f0b1
     SHA1          : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
     ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
-    
+
     Name          : world.txt
     FileInfo      : @{author=Administrators}
     Type          : text/plain
@@ -45,11 +45,11 @@ function Invoke-B2ItemUpload
     AccountID     : 30f20426f0b1
     SHA1          : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
     ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
-    
+
     The cmdlet above will upload the files hello.txt and world.txt to the selected bucket ID.
 .EXAMPLE
     PS C:\>Get-ChildItem | Invoke-B2ItemUpload -BucketID 4a48fe8875c6214145260818
-    
+
     Name          : hello.txt
     FileInfo      : @{author=Administrators}
     Type          : text/plain
@@ -58,7 +58,7 @@ function Invoke-B2ItemUpload
     AccountID     : 30f20426f0b1
     SHA1          : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
     ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
-    
+
     Name          : world.txt
     FileInfo      : @{author=Administrators}
     Type          : text/plain
@@ -67,15 +67,15 @@ function Invoke-B2ItemUpload
     AccountID     : 30f20426f0b1
     SHA1          : E1E64A1C6E535763C5B775BAAD2ACF792D97F7DA
     ID            : 4_z4a48fe8875c6214145260818_f1073d0771c828c7f_d20160131_m052759_c001_v0001000_t0014
-    
+
     The cmdlet above will upload all files returned by the Get-ChildItem cmdlet.
 .INPUTS
     System.String
-    
+
         This cmdlet takes the AccountID and ApplicationKey as strings.
 .OUTPUTS
     PS.B2.FileProperty
-    
+
         This cmdlet will output a PS.B2.FileProperty object holding the file properties.
 .LINK
     https://www.backblaze.com/b2/docs/
@@ -91,7 +91,7 @@ function Invoke-B2ItemUpload
     Param
     (
         # The ID of the bucket to update.
-        [Parameter(Mandatory=$true, 
+        [Parameter(Mandatory=$true,
                    Position=0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
@@ -112,7 +112,7 @@ function Invoke-B2ItemUpload
         [ValidateNotNullOrEmpty()]
         [Switch]$Force
     )
-    
+
     Begin
     {
         # Pulls the unique pod upload uri for this session.
@@ -144,9 +144,9 @@ function Invoke-B2ItemUpload
                         'X-Bz-Content-Sha1' = $b2FileSHA1
                         'X-Bz-Info-Author' = $b2FileAuthor
                     }
-                    
+
                     $bbInfo = Invoke-RestMethod -Method Post -Uri $b2Upload.UploadUri -Headers $sessionHeaders -InFile $file
-                    
+
                     $bbReturnInfo = [PSB2.FileProperty]::new(
                         $bbInfo.fileName,
                         $bbInfo.fileInfo,
@@ -157,6 +157,7 @@ function Invoke-B2ItemUpload
                         $bbInfo.contentSha1,
                         $bbInfo.fileId
                     )
+
                     Write-Output $bbReturnInfo
                 }
                 catch

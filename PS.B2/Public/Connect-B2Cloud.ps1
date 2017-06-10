@@ -7,29 +7,29 @@ function Connect-B2Cloud
     The Connect-B2Cloud cmdlet is used to retireve the API Uri, download Uri, and API
     token that authorizes actions againt a B2 account. The cmdlet returns the results
     of the REST query as text if successful and an error if not successful.
-    
+
     The application key and account ID can be obtained from your Backblaze B2 account page.
 .EXAMPLE
     Connect-B2Cloud
-   
+
     AccountID       ApiUri                       DownloadUri                Token
     ---------       ------                       -----------                -----
     30f20426f0b1    https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
 
     The above cmdlet will prompt for the account ID and application key, authenticate, and
     save the token, API Uri, and download Uri returned for use in the other PS.B2 modules.
-    
+
     The API Uri, download Uri, and authorization token will be returned if the cmdlet was successful.
 .EXAMPLE
     PS C:\>Connect-B2Cloud -AccountID 30f20426f0b1 -ApplicationKey YOUR_APPLICATION_KEY
-   
+
     AccountID       ApiUri                       DownloadUri                Token
     ---------       ------                       -----------                -----
     30f20426f0b1    https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
 
     The above cmdlet will take the given account ID and application key authenticate and
     save the token, API Uri, and download Uri returned for use in the other PS.B2 modules.
-    
+
     The API Uri, download Uri, and authorization token will be returned if the cmdlet was successful.
 .INPUTS
     System.String
@@ -52,25 +52,25 @@ function Connect-B2Cloud
     [CmdletBinding(SupportsShouldProcess=$false,
                    PositionalBinding=$true)]
     [Alias('cb2c')]
-    [OutputType('PS.B2.Account')]
+    [OutputType([PSB2.Account])]
     Param
     (
         # The account ID for the B2 account.
-        [Parameter(Mandatory=$false, 
+        [Parameter(Mandatory=$false,
                    Position=0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Alias('ID')]
         [String]$AccountID,
         # The application key to access the B2 account.
-        [Parameter(Mandatory=$false, 
+        [Parameter(Mandatory=$false,
                    Position=1)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Alias('Key')]
         [String]$ApplicationKey
     )
-    
+
     Begin
     {
         if(-not $AccountID -or -not $ApplicationKey)

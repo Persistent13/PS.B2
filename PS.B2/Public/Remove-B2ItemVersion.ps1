@@ -7,27 +7,27 @@ function Remove-B2ItemVersion
 .DESCRIPTION
     Remove-B2ItemVersion will remove the version of a given file.
     If the file only has one version the file will be deleted.
-    
+
     If the version you delete is the latest version, and there are older versions, then the most recent older version will become the
     current version, and be the one that you'll get when downloading by name.
-    
+
     An API key is required to use this cmdlet.
 .EXAMPLE
     Remove-B2ItemVersion -Name items/hello.txt -ID 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0104
-    
+
     Name            ID
     ----            --
     typing_test.txt 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0109
-    
-    The cmdlet above will 
+
+    The cmdlet above will
 .EXAMPLE
     PS C:\>Get-B2Bucket | Get-B2ChildItem | Remove-B2ItemVersion -Force
-    
+
     Name            ID
     ----            --
     items/hello.txt 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0104
     items/world.txt 4_h4a48fe8875c6214145260818_f000000000000472a_d20140104_m032022_c001_v0000123_t0105
-    
+
     The cmdlet above will remove the latest version of the first 1000 files in all buckets without prompting.
     If the file has only one version the file will be deleted.
 .LINK
@@ -40,7 +40,7 @@ function Remove-B2ItemVersion
     [CmdletBinding(SupportsShouldProcess=$true,
                    ConfirmImpact='High')]
     [Alias('rb2iv')]
-    [OutputType('PS.B2.RemoveFile')]
+    [OutputType([PSB2.RemoveFile])]
     Param
     (
         # The Name of the file to delete.
@@ -78,7 +78,7 @@ function Remove-B2ItemVersion
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken
     )
-    
+
     Begin
     {
         # The Begin block verifies each item Name is paired with an item ID, builds the session
@@ -109,7 +109,7 @@ function Remove-B2ItemVersion
         }
         catch
         {
-            # This shouldn't ever happen but just in case. 
+            # This shouldn't ever happen but just in case.
             throw 'Unable to create the file ID and file name arrays.'
         }
     }
@@ -126,12 +126,12 @@ function Remove-B2ItemVersion
                     # Converts the slected file ID and name to a JSON string that will be POST'd.
                     [String]$sessionBody = @{'fileId'=$b2FileArray[0][$i];'fileName'=$b2FileArray[1][$i]} | ConvertTo-Json
                     $bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
-                    $bbReturnInfo = [PSCustomObject]@{
-                        'Name' = $bbInfo.fileName
-                        'ID' = $bbInfo.fileId
-                    }
-                    # bbReturnInfo is returned after Add-ObjectDetail is processed.
-                    Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.RemoveFile'
+                    $bbReturnInfo = [PSB2.RemoveFile]::new(
+                        $bbInfo.fileName,
+                        $bbInfo.fileId
+                    )
+
+                    Write-Output $bbReturnInfo
                 }
                 catch
                 {

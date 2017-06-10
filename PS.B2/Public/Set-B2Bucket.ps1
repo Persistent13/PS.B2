@@ -5,36 +5,36 @@ function Set-B2Bucket
     Set-B2Bucket allows you to change the bucket type.
 .DESCRIPTION
     Set-B2Bucket allows you to change the bucket type.
-    
+
     An API key is required to use this cmdlet.
 .EXAMPLE
     Set-B2Bucket -BucketID 4a48fe8875c6214145260818 -BucketType allPublic
-    
+
     BucketName         BucketID                 BucketType AccountID
     ----------         --------                 ---------- ---------
     slack-jimmy-carrot 4a48fe8875c6214145260818 allPublic  30f20426f0b1
-    
+
     The cmdlet above will set the bucket with the ID 4a48fe8875c6214145260818 to allPublic.
 .EXAMPLE
     PS C:\>Get-B2Bucket | Where-Object {$_.BucketType -eq allPrivate} | Set-B2Bucket -BucketType allPublic
-    
+
     BucketName            BucketID                 BucketType AccountID
     ----------            --------                 ---------- ---------
     stoic-barbarian-lemur 4a48fe8875c6214145260818 allPublic  010203040506
     frisky-navigator-lion 4a48fe8875c6214145260819 allPublic  010203040506
-    
+
     The cmdlets above will set all, if any, allPrivate buckets to allPublic.
 .INPUTS
     System.String
-    
+
         This cmdlet takes the AccountID and ApplicationKey as strings.
-    
+
     System.Uri
-    
+
         This cmdlet takes the ApiUri as a uri.
 .OUTPUTS
     PS.B2.Bucket
-    
+
         The cmdlet will output a PS.B2.Bucket object holding the bucket info.
 .LINK
     https://www.backblaze.com/b2/docs/
@@ -46,7 +46,7 @@ function Set-B2Bucket
     [CmdletBinding(SupportsShouldProcess=$true,
                    ConfirmImpact='High')]
     [Alias('sb2b')]
-    [OutputType('PS.B2.Bucket')]
+    [OutputType([PS.B2.Bucket])]
     Param
     (
         # The ID of the bucket to update.
@@ -90,7 +90,7 @@ function Set-B2Bucket
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken
     )
-    
+
     Begin
     {
         [Hashtable]$sessionHeaders = @{'Authorization'=$ApiToken}
@@ -106,14 +106,14 @@ function Set-B2Bucket
                 {
                     [String]$sessionBody = @{'accountId'=$AccountID;'bucketId'=$bucket;'bucketType'=$BucketType} | ConvertTo-Json
                     $bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
-                    $bbReturnInfo = [PSCustomObject]@{
-                        'BucketName' = $bbInfo.bucketName
-                        'BucketID' = $bbInfo.bucketId
-                        'BucketType' = $bbInfo.bucketType
-                        'AccountID' = $bbInfo.accountId
-                    }
-                    # bbReturnInfo is returned after Add-ObjectDetail is processed.
-                    Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Bucket'
+                    $bbReturnInfo = [PSB2.Bucket]::new(
+                        $bbInfo.bucketName,
+                        $bbInfo.bucketId,
+                        $bbInfo.bucketType,
+                        $bbInfo.accountId
+                    )
+
+                    Write-Output $bbReturnInfo
                 }
                 catch
                 {

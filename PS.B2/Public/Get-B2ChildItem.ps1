@@ -5,64 +5,64 @@ function Get-B2ChildItem
     The Get-B2ChildItem cmdlet will return a list of items in a bucket and associated file properties.
 .DESCRIPTION
     The Get-B2ChildItem cmdlet will return a list of items in a bucket and associated file properties.
-    
+
     The file information to be returned:
-    
+
     - Name
     - Size
     - UploadTime
     - Action
     - ID
-    
+
     By default the selection has a hard limit to the first 1000 items; to increment the selection
-    use the StartName paramter to specifiy the next starting item's name and ItemCount to set the 
+    use the StartName paramter to specifiy the next starting item's name and ItemCount to set the
     list limit from the file in StartName.
-    
+
     An API key is required to use this cmdlet.
 .EXAMPLE
     Get-B2ChildItem -BucketID 4a48fe8875c6214145260818
-    
+
     Name       : items/hello.txt
     Size       : 6
     UploadTime : 1439083733000
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f1004ba650fe24e6b_d20150809_m012853_c100_v0009990_t0000
-    
+
     Name       : items/world.txt
     Size       : 6
     UploadTime : 1439083734000
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f1004ba650fe24e6c_d20150809_m012854_c100_v0009990_t0000
-    
+
     The cmdlet above will list the first 1000 items in a given bucket.
 .EXAMPLE
     PS C:\>Get-B2ChildItem -BucketID 4a48fe8875c6214145260818 -StartName items/world.txt -ItemCount 3
-    
+
     Name       : items/world.txt
     Size       : 6
     UploadTime : 1439083734000
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f1004ba650fe24e6c_d20150809_m012854_c100_v0009990_t0000
-    
+
     Name       : items/how.txt
     Size       : 6
     UploadTime : 1439083734000
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f8aa4ba650fe24e6c_d20150809_m012854_c100_v0009990_t0000
-    
+
     Name       : items/are.txt
     Size       : 6
     UploadTime : 1439083734000
     Action     : upload
     ID         : 4_z27c88f1d182b150646ff0b16_f1004hf950fe24e6c_d20150809_m012854_c100_v0009990_t0000
-    
+
     The cmdlet above will start listing the items from items/world.txt and then three preceeding
     items after that.
 .LINK
     https://www.backblaze.com/b2/docs/
 .OUTPUTS
     PS.B2.File
-    
+
         The cmdlet will output a PS.B2.File object holding file version info.
 .ROLE
     PS.B2
@@ -71,7 +71,7 @@ function Get-B2ChildItem
 #>
     [CmdletBinding(SupportsShouldProcess=$false)]
     [Alias('gb2ci')]
-    [OutputType('PS.B2.File')]
+    [OutputType([PSB2.File])]
     Param
     (
         # The ID of the bucket to query.
@@ -107,7 +107,7 @@ function Get-B2ChildItem
         [ValidateNotNullOrEmpty()]
         [String]$ApiToken = $script:SavedB2ApiToken
     )
-    
+
     Begin
     {
         [Hashtable]$sessionHeaders = @{'Authorization'=$ApiToken}
@@ -124,15 +124,15 @@ function Get-B2ChildItem
                 $bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
                 foreach($info in $bbInfo.files)
                 {
-                    $bbReturnInfo = [PSCustomObject]@{
-                        'Name' = $info.fileName
-                        'Size' = $info.size
-                        'UploadTime' = $info.uploadTimestamp
-                        'Action' = $info.action
-                        'ID' = $info.fileId
-                    }
-                    # bbReturnInfo is returned after Add-ObjectDetail is processed.
-                    Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.File'
+                    $bbReturnInfo = [PSB2.File]::new(
+                        $info.fileName,
+                        $info.size,
+                        $info.uploadTimestamp,
+                        $info.action,
+                        $info.fileId
+                    )
+
+                    Write-Output $bbReturnInfo
                 }
             }
             catch
