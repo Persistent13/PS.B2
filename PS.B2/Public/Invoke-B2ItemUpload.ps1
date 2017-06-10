@@ -87,7 +87,7 @@ function Invoke-B2ItemUpload
     [CmdletBinding(SupportsShouldProcess=$true,
                    ConfirmImpact='Medium')]
     [Alias('ib2iu')]
-    [OutputType('PS.B2.FileProperty')]
+    [OutputType([PSB2.FileProperty])]
     Param
     (
         # The ID of the bucket to update.
@@ -147,18 +147,17 @@ function Invoke-B2ItemUpload
                     
                     $bbInfo = Invoke-RestMethod -Method Post -Uri $b2Upload.UploadUri -Headers $sessionHeaders -InFile $file
                     
-                    $bbReturnInfo = [PSCustomObject]@{
-                        'Name' = $bbInfo.fileName
-                        'FileInfo' = $bbInfo.fileInfo
-                        'Type' = $bbInfo.contentType
-                        'Length' = $bbInfo.contentLength
-                        'BucketID' = $bbInfo.bucketId
-                        'AccountID' = $bbInfo.accountId
-                        'SHA1' = $bbInfo.contentSha1
-                        'ID' = $bbInfo.fileId
-                    }
-                    # bbReturnInfo is returned after Add-ObjectDetail is processed.
-                    Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.FileProperty'
+                    $bbReturnInfo = [PSB2.FileProperty]::new(
+                        $bbInfo.fileName,
+                        $bbInfo.fileInfo,
+                        $bbInfo.contentType,
+                        $bbInfo.contentLength,
+                        $bbInfo.bucketId,
+                        $bbInfo.accountId,
+                        $bbInfo.contentSha1,
+                        $bbInfo.fileId
+                    )
+                    Write-Output $bbReturnInfo
                 }
                 catch
                 {

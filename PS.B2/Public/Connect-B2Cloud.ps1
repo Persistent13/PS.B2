@@ -102,14 +102,14 @@ function Connect-B2Cloud
             [Uri]$script:SavedB2ApiUri = $bbInfo.apiUrl
             [String]$script:SavedB2ApiToken = $bbInfo.authorizationToken
             [Uri]$script:SavedB2DownloadUri = $bbInfo.downloadUrl
-            $bbReturnInfo = [PSCustomObject]@{
-                'AccountID' = $bbInfo.accountId
-                'ApiUri' = $bbInfo.apiUrl
-                'DownloadUri' = $bbInfo.downloadUrl
-                'Token' = $bbInfo.authorizationToken
-            }
-            # bbReturnInfo is returned after Add-ObjectDetail is processed.
-            Add-ObjectDetail -InputObject $bbReturnInfo -TypeName 'PS.B2.Account'
+            $bbReturnInfo = [PSB2.Account]::new(
+                $bbInfo.accountId,
+                $bbInfo.apiUrl,
+                $bbInfo.downloadUrl,
+                $bbInfo.authorizationToken
+            )
+
+            Write-Output $bbReturnInfo
         }
         catch
         {
