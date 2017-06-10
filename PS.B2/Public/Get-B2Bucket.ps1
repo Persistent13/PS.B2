@@ -84,7 +84,10 @@ function Get-B2Bucket
                 $info.bucketName,
                 $info.bucketId,
                 $info.bucketType,
-                $info.accountId
+                $info.accountId,
+                $info.bucketInfo,
+                $info.lifecycleRules,
+                $info.revision
             )
 
             Write-Output $bbReturnInfo

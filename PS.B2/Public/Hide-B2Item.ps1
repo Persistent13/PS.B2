@@ -114,10 +114,13 @@ function Hide-B2Item
                     $bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
                     $bbReturnInfo = [PSB2.File]::new(
                         $bbInfo.fileName,
-                        $bbInfo.size,
+                        $bbInfo.contentLength,
                         $bbInfo.uploadTimestamp,
                         $bbInfo.action,
-                        $bbInfo.fileId
+                        $bbInfo.fileId,
+                        $bbInfo.contentType,
+                        $bbInfo.contentSha1,
+                        $bbInfo.fileInfo
                     )
 
                     Write-Output $bbReturnInfo

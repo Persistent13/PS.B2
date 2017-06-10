@@ -126,10 +126,13 @@ function Get-B2ChildItem
                 {
                     $bbReturnInfo = [PSB2.File]::new(
                         $info.fileName,
-                        $info.size,
+                        $info.contentLength,
                         $info.uploadTimestamp,
                         $info.action,
-                        $info.fileId
+                        $info.fileId,
+                        $info.contentType,
+                        $info.contentSha1,
+                        $info.fileInfo
                     )
 
                     Write-Output $bbReturnInfo
