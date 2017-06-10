@@ -45,7 +45,7 @@ function New-B2LargeFileUpload
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Alias('FullName')]
-        [System.IO.FileInfo[]]$Path,
+        [String[]]$Path,
         # The Uri for the B2 Api query.
         [Parameter(Mandatory=$false)]
         [ValidateNotNull()]

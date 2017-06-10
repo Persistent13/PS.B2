@@ -38,7 +38,7 @@ function Start-B2LargeFileUpload
                    ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [System.IO.FileInfo]$Path,
+        [String]$Path,
         # The ID of the file to upload.
         [Parameter(Mandatory=$true)]
         [ValidateNotNull()]
@@ -73,45 +73,76 @@ function Start-B2LargeFileUpload
             $errorDetail = $_.Exception.Message
             throw "Unable to connect to the B2 cloud: $errorDetail"
         }
-        $stream = [System.IO.File]::OpenRead($Path.FullName)
+        $item = Get-Item -Path $Path
+        $stream = [System.IO.File]::OpenRead($item.FullName)
         $buffer = [Byte[]]::New($ChunkSize)
-        [UInt32]$i = 0
+        [UInt32]$i = 1 # A number from 1 to 10000, must always start with 1.
         $bbReturnInfo = @()
+        # Due to Invoke-RestMethod's poor performace in cleaning up stale connections
+        # we have to break HTTP 1.1 spec and allow for a greater than 2 simultaneous connections
+        # by setting the connection limit to 4. This change only effects this script's scope.
+        #$ServicePoint = [System.Net.ServicePointManager]::FindServicePoint($bbLargeUploadUri.UploadUri)
+        #$ServicePoint.ConnectionLimit = 8
     }
     Process
     {
         try
         {
+            $fileInfo = [System.IO.FileInfo]::New($Path)
+            $localFileize = $fileInfo.Length
+            $totalBytesSent = 0
+            $bytesSentForPart=100000000
+            $minPartSize=$bytesSentForPart
+            $arr=[System.Collections.ArrayList]::New()
+            [byte[]]$data=[byte]::new(100000000)
             while($bytesRead = $stream.Read($buffer,0,$ChunkSize))
             {
-                $tmpFile = '{0}.{1}.{2}' -f $Path.Name,$i,'tmp'
+                # Set file
+                $tmpFile = '{0}.{1}.{2}' -f $item.Name,$i,'tmp'
                 $tmpPath = "$env:TEMP\$tmpFile"
                 $openStream = [System.IO.File]::OpenWrite($tmpPath)
                 $openStream.Write($buffer,0,$bytesRead)
                 $openStream.Close()
+                [String]$hash = (Get-FileHash -Path $tmpPath -Algorithm SHA1).Hash
+                [Uint32]$length = ([System.IO.FileInfo]$tmpPath).Length
+
+                # Set webclient
+                $webClient = [System.Net.WebClient]::New()
+                $webClient.Headers.Add('Authorization', $bbLargeUploadUri.Token)
+                $webClient.Headers.Add('X-Bz-Part-Number', $i)
+                $webClient.Headers.Add('X-Bz-Content-Sha1', $hash)
+                $webClient.Headers.Add('Content-Length', $length)
+                $webClient.Headers.Add('ContentType','multipart/form-data')
+
+                # Do
+                [Byte[]]$res = $webClient.UploadFile($bbLargeUploadUri.UploadUri, 'Post', $tmpPath)
+                [String]$resText = [System.Text.Encoding]::ASCII.GetString($res)
+                $bbReturnInfo += $resText | ConvertFrom-Json
+                <#
                 [Hashtable]$sessionHeaders = @{
                             'Authorization' = $bbLargeUploadUri.Token
                             'X-Bz-Part-Number' = $i
                             'X-Bz-Content-Sha1' = (Get-FileHash -Path $tmpPath -Algorithm SHA1).Hash
                             'Content-Length' = ([System.IO.FileInfo]$tmpPath).Length
                 }
-                $bbReturnInfo += Invoke-RestMethod -Method Post -Uri $bbLargeUploadUri.UploadUri -Headers $sessionHeaders -InFile $tmpPath
+                $bbReturnInfo += Invoke-RestMethod -Method Post -Uri $bbLargeUploadUri.UploadUri -Headers $sessionHeaders -InFile $tmpPath -DisableKeepAlive
+                #>
                 Remove-Item -Path $tmpPath -Force
-                [GC]::Collect()
                 $i++
             }
         }
-        finally
+        catch
         {
+            $stream.Close()
             $openStream.Close()
             Remove-Item -Path $tmpPath -Force
             $errorDetail = $_.Exception.Message
             Write-Error -Message "$errorDetail"
-            [GC]::Collect()
         }
     }
     End
     {
-        Write-Output -InputObject $bbReturnInfo
+        $stream.Close()
+        Write-Output $bbReturnInfo
     }
 }

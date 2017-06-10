@@ -7,29 +7,29 @@ function Connect-B2Cloud
     The Connect-B2Cloud cmdlet is used to retireve the API Uri, download Uri, and API
     token that authorizes actions againt a B2 account. The cmdlet returns the results
     of the REST query as text if successful and an error if not successful.
-    
+
     The application key and account ID can be obtained from your Backblaze B2 account page.
 .EXAMPLE
     Connect-B2Cloud
-   
+
     AccountID       ApiUri                       DownloadUri                Token
     ---------       ------                       -----------                -----
     30f20426f0b1    https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
 
     The above cmdlet will prompt for the account ID and application key, authenticate, and
     save the token, API Uri, and download Uri returned for use in the other PS.B2 modules.
-    
+
     The API Uri, download Uri, and authorization token will be returned if the cmdlet was successful.
 .EXAMPLE
     PS C:\>Connect-B2Cloud -AccountID 30f20426f0b1 -ApplicationKey YOUR_APPLICATION_KEY
-   
+
     AccountID       ApiUri                       DownloadUri                Token
     ---------       ------                       -----------                -----
     30f20426f0b1    https://api900.backblaze.com https://f900.backblaze.com YOUR_TOKEN
 
     The above cmdlet will take the given account ID and application key authenticate and
     save the token, API Uri, and download Uri returned for use in the other PS.B2 modules.
-    
+
     The API Uri, download Uri, and authorization token will be returned if the cmdlet was successful.
 .INPUTS
     System.String
@@ -68,7 +68,7 @@ function Connect-B2Cloud
         [Alias('Key')]
         [String]$ApplicationKey
     )
-    
+
     Begin
     {
         if(-not $AccountID -or -not $ApplicationKey)

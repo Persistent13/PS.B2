@@ -103,7 +103,7 @@ function Invoke-B2LargeItemUpload
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Alias('FullName')]
-        [System.IO.FileInfo[]]$Path,
+        [String[]]$Path,
         # Used to bypass confirmation prompts.
         [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
