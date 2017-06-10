@@ -57,7 +57,7 @@ Connect-B2Cloud -AccountID "ACCOUNT_ID" -ApplicationKey "APPLICATION_KEY"
 You can find all exported PS.B2 cmdlets like so...
 
 ```powershell
-(Get-Module PS.B2).ExportedCommands.Keys
+Get-Command -Module PS.B2
 ```
 
 ## License ##
