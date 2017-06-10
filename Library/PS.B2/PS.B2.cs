@@ -22,7 +22,7 @@ namespace PSB2
         }
         public override string ToString()
         {
-            return this.AccountId;
+            return this.ApiUri.ToString();
         }
     }
     public enum BucketType { allPublic, allPrivate, snapshot }
@@ -75,7 +75,7 @@ namespace PSB2
                     Action Action,
                     long FileId)
         {
-            var x = FromUnixTime(UploadUnixTimestamp);
+            DateTime x = FromUnixTime(UploadUnixTimestamp);
             this.Name = Name;
             this.Size = Size;
             this.UploadTime = x;
