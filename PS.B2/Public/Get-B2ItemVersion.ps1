@@ -119,7 +119,7 @@ function Get-B2ItemVersion
                         $info.fileId,
                         $info.contentType,
                         $info.contentSha1,
-                        $info.fileInfo
+                        $($info.fileInfo | ConvertTo-Json -Compress)
                     )
 
                     Write-Output $bbReturnInfo

@@ -84,7 +84,7 @@ function Get-B2ItemProperty
                    Position=0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [String[]]$ID,
+        [String[]]$FileID,
         # The Uri for the B2 Api query.
         [Parameter(Mandatory=$false,
                    Position=1)]
@@ -107,7 +107,7 @@ function Get-B2ItemProperty
     Process
     {
         # Loops through each item in the ID array and returns the file info.
-        foreach($file in $ID)
+        foreach($file in $FileID)
         {
             try
             {
@@ -115,13 +115,14 @@ function Get-B2ItemProperty
                 $bbInfo = Invoke-RestMethod -Method Post -Uri $b2ApiUri -Headers $sessionHeaders -Body $sessionBody
                 $bbReturnInfo = [PSB2.FileProperty]::new(
                     $bbInfo.fileName,
-                    $bbInfo.fileInfo,
+                    $($bbInfo.fileInfo | ConvertTo-Json -Compress),
                     $bbInfo.contentType,
                     $bbInfo.contentLength,
                     $bbInfo.bucketId,
                     $bbInfo.accountId,
                     $bbInfo.contentSha1,
-                    $bbInfo.fileId
+                    $bbInfo.fileId,
+                    $bbInfo.uploadTimestamp
                 )
 
                 Write-Output $bbReturnInfo

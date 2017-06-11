@@ -58,7 +58,7 @@ function Get-B2UploadUri
                    Position=0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [String]$BucketID,
+        [String[]]$BucketID,
         # The Uri for the B2 Api query.
         [Parameter(Mandatory=$false,
                    Position=1)]

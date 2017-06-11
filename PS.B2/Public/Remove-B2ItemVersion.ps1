@@ -58,7 +58,7 @@ function Remove-B2ItemVersion
                    Position=1)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [String[]]$ID,
+        [String[]]$FileID,
         # Used to bypass confirmation prompts.
         [Parameter(Mandatory=$false,
                    Position=2)]

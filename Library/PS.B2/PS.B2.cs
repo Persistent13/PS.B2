@@ -95,14 +95,14 @@ namespace PSB2
         }
         public File(string Name,
                     long Size,
-                    long UploadUnixTimestamp,
+                    long UploadUnixTime,
                     Action ItemType,
                     string FileId,
                     string ContentType,
                     string SHA1,
                     string Info)
         {
-            DateTime x = FromUnixTime(UploadUnixTimestamp);
+            DateTime x = FromUnixTime(UploadUnixTime);
             this.Name = Name;
             this.Size = Size;
             this.UploadTime = x;
@@ -126,30 +126,59 @@ namespace PSB2
     {
         public string Name;
         public string FileInfo;
-        public string Type;
-        public long Length;
+        public string MimeType;
+        public long Size;
         public string BucketId;
         public string AccountId;
-        public SHA1 SHA1;
+        public string SHA1;
         public string FileId;
+        public DateTime UploadTime;
         public FileProperty() {  }
         public FileProperty(string Name,
                             string FileInfo,
-                            string Type,
-                            long Length,
+                            string MimeType,
+                            long Size,
                             string BucketId,
                             string AccountId,
-                            SHA1 SHA1,
-                            string FileId)
+                            string SHA1,
+                            string FileId,
+                            DateTime UploadTime)
         {
             this.Name = Name;
             this.FileInfo = FileInfo;
-            this.Type = Type;
-            this.Length = Length;
+            this.MimeType = MimeType;
+            this.Size = Size;
             this.BucketId = BucketId;
             this.AccountId = AccountId;
             this.SHA1 = SHA1;
             this.FileId = FileId;
+            this.UploadTime = UploadTime;
+        }
+        public FileProperty(string Name,
+                            string FileInfo,
+                            string MimeType,
+                            long Size,
+                            string BucketId,
+                            string AccountId,
+                            string SHA1,
+                            string FileId,
+                            long UploadUnixTime)
+        {
+            DateTime x = FromUnixTime(UploadUnixTime);
+            this.Name = Name;
+            this.FileInfo = FileInfo;
+            this.MimeType = MimeType;
+            this.Size = Size;
+            this.BucketId = BucketId;
+            this.AccountId = AccountId;
+            this.SHA1 = SHA1;
+            this.FileId = FileId;
+            this.UploadTime = x;
+        }
+        private static DateTime FromUnixTime(long unixTime)
+        {
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return epoch.AddMilliseconds(unixTime).ToLocalTime();
         }
         public override string ToString()
         {

@@ -120,7 +120,7 @@ function Hide-B2Item
                         $bbInfo.fileId,
                         $bbInfo.contentType,
                         $bbInfo.contentSha1,
-                        $bbInfo.fileInfo
+                        $($bbInfo.fileInfo | ConvertTo-Json -Compress)
                     )
 
                     Write-Output $bbReturnInfo

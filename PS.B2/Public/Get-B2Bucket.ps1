@@ -85,7 +85,7 @@ function Get-B2Bucket
                 $info.bucketId,
                 $info.bucketType,
                 $info.accountId,
-                $info.bucketInfo,
+                $($info.bucketInfo | ConvertTo-Json -Compress),
                 $info.lifecycleRules,
                 $info.revision
             )
