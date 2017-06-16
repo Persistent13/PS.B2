@@ -107,6 +107,17 @@ InModuleScope PS.B2 {
         'uploadUrl' = 'https://pod-000-1005-03.backblaze.com/b2api/v1/b2_upload_file?cvt=c001_v0001005_t0027&bucket=4a48fe8875c6214145260818'
         'authorizationToken' = '2_20151009170037_f504a0f39a0f4e657337e624_9754dde94359bd7b8f1445c8f4cc1a231a33f714_upld'
     }
+    $b2_bucket_object = foreach($i in $b2_buckets){
+        [PSB2.Bucket]::new(
+            $i.bucketName,
+            $i.bucketId,
+            $i.bucketType,
+            $i.accountId,
+            $i.bucketinfo.ToString(),
+            $i.lifecycleRules,
+            $i.revision
+        )
+    }
     Describe "PS.B2 cmdlet tests" {
         Context "Connect-B2Cloud" {
             It "Does not error with valid input" {
@@ -155,10 +166,9 @@ InModuleScope PS.B2 {
             It "Return the correct numberd output for pipeline input" {
                 # Mock for Get-B2ChildItem
                 Mock Invoke-RestMethod { return $b2_item } -ParameterFilter { $Uri -eq $('{0}{1}' -f $b2_account['apiUrl'],'b2api/v1/b2_list_file_names') }
-                # Mock for Get-B2Bucket
-                Mock Invoke-RestMethod { return $b2_buckets } -ParameterFilter { $Uri -eq $('{0}{1}' -f $b2_account['apiUrl'],'/b2api/v1/b2_list_buckets') }
+                Mock Get-B2Bucket { return $b2_bucket_object }
                 Get-B2Bucket | Get-B2ChildItem
-                Assert-MockCalled -CommandName Invoke-RestMethod -Exactly 4 -Scope It
+                Assert-MockCalled -CommandName Invoke-RestMethod -Exactly 3 -Scope It
             }
             It "Returns correct numbered output for input array" {
                 Mock Invoke-RestMethod { return $b2_item }
